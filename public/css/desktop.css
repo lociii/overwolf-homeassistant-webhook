@@ -1,0 +1,61 @@
+body {
+  display: flex;
+  flex-direction: column;
+  margin: 0px;
+  min-height: 100vh;
+  overflow: hidden;
+  font-size: 14px;
+  background-color: #f6f6f6;
+  color: black;
+  font-family: sans-serif;
+}
+
+main {
+  flex: auto;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+}
+
+a {
+  color: inherit;
+}
+
+#left {
+  flex-grow: 2;
+}
+
+#pathInput
+{
+  height: 5%;
+  width: 100%;
+}
+
+#waDisplayInput
+{
+  height: 45%;
+  width: 100%;
+}
+
+#right textarea {
+  height: 100%;
+  width: 100%;
+}
+
+#readAuras
+{
+  background-color: #888888;
+  width: 100px;
+  height: 75px;
+}
+
+#executeButton
+{
+  background-color: #888888;
+  width: 100px;
+  height: 75px;
+}
+
+#right {
+  flex-grow: 2;
+}
