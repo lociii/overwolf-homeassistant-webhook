@@ -1,6 +1,6 @@
 import {OWGames, OWGamesEvents, OWHotkeys} from "@overwolf/overwolf-api-ts";
 import {AppWindow} from "../AppWindow";
-import {hotkeys, windowNames, interestingFeatures} from "../consts";
+import {hotkeys, windowNames, interestingFeatures, GameIDs} from "../consts";
 import WindowState = overwolf.windows.WindowStateEx;
 
 class InGame extends AppWindow
@@ -12,6 +12,8 @@ class InGame extends AppWindow
     private windowIsOpen = false;
     private gameInFocus = false;
     private LocalStorage;
+
+    private gameClassID: number;
   
     private constructor()
     {
@@ -21,6 +23,9 @@ class InGame extends AppWindow
     
         let SavedPath = this.LocalStorage.SavedPath;
         console.log("Saved Path: " + SavedPath);
+
+        let gameClassIDPromise = Promise.resolve(this.getCurrentGameClassId());
+        gameClassIDPromise.then((val) => {console.log("gameClassID:" + val); this.gameClassID = val;});
 
         this.eventsLog = document.getElementById("eventsLog");
     
@@ -49,9 +54,9 @@ class InGame extends AppWindow
         this.gameInFocus = await this.getGameInFocus();
     
         this.windowIsOpen = await this.getWindowIsOpen();
-  
-        const gameClassID = await this.getCurrentGameClassId();
-        const gameFeatures = interestingFeatures;
+
+        const curGameID = "21216";
+        const gameFeatures = interestingFeatures[curGameID];
         if (gameFeatures && gameFeatures.length)
         {
             console.log("if (gameFeatures && gameFeatures.length)");
@@ -74,20 +79,6 @@ class InGame extends AppWindow
             console.log("URLInput.onchange", URLInput.value);
             GameStuff.LocalStorage.SavedPath = URLInput.value;
         };
-
-        if (gameFeatures && gameFeatures.length)
-        {
-            this.gameEventListener = new OWGamesEvents
-            (
-                {
-                    onInfoUpdates: this.onInfoUpdate.bind(this),
-                    onNewEvents: this.onNewEvents.bind(this)
-                },
-                gameFeatures
-            );
-
-            this.gameEventListener.start();
-        }
     }
 
     private onGameInfoUpdated(e)
@@ -148,36 +139,38 @@ class InGame extends AppWindow
 
     private onInfoUpdate(info)
     {
-        fetch(this.LocalStorage.SavedPath, {method: "POST", body: JSON.stringify(info)});
+        console.log("gameClassID:", this.gameClassID);
+        console.log("InfoUpdate Received!");
 
-        if (info.addons != undefined) 
-        {
-            let addonID = "";
-            //console.log("AddOn Sync Received!");
-            let addon = Object.entries(info.addons).find(([key, addonInfo]) => (addonInfo as string).includes("{\"name\":\"LociOWAppTestAddOn\""))
-            if (addon != null)
-            {
-                addonID = addon[0];
-            }
+        let sendData = {"GameID": this.gameClassID, "Payload": info};
 
-            let addonMsg = info.addons["var_" + addonID];
-            if (addonMsg == null || addonMsg == "")
-            {
-                return;
-            }
-        }
+        console.dir(sendData)
+        let infoString = JSON.stringify(sendData);
+        console.dir(infoString)
+        let curGame = this;
+        fetch(this.LocalStorage.SavedPath, {headers: {"Content-Type": "application/json"}, method: "POST", body: infoString})
+        .then((response) => response.json())
+        .then((data) => {console.log("Reaction Received:"); console.log(data)});
+
+        curGame.eventsLog.innerHTML = curGame.eventsLog.innerHTML + "<br>" + infoString;
     }
 
     private onNewEvents(info)
     {
-        console.log("Info Received!");
-        console.dir(info)
+        console.log("gameClassID:", this.gameClassID);
+        console.log("Event Received!");
+
+        let sendData = {"GameID": this.gameClassID, "Payload": info};
+
+        console.dir(sendData)
+        let infoString = JSON.stringify(sendData);
+        console.dir(infoString)
         let curGame = this;
-        fetch(this.LocalStorage.SavedPath, {headers: {"Content-Type": "application/json"}, method: "POST", body: JSON.stringify(info)})
+        fetch(this.LocalStorage.SavedPath, {headers: {"Content-Type": "application/json"}, method: "POST", body: infoString})
         .then((response) => response.json())
         .then((data) => {console.log("Reaction Received:"); console.log(data)});
 
-        curGame.eventsLog.innerHTML = curGame.eventsLog.innerHTML + "<br>" + JSON.stringify(info);
+        curGame.eventsLog.innerHTML = curGame.eventsLog.innerHTML + "<br>" + infoString;
     }
 
     private async setToggleHotkeyText()
