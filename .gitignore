@@ -22,3 +22,10 @@ yarn-error.log*
 
 # Overwolf packages
 *.opk
+
+# bash
+.bash_aliases
+.bash_history
+
+# vscode
+
