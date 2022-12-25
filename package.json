@@ -4,8 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "buil_opk": "webpack --mode=development --env makeOpk",
-        "build": "webpack --mode=development",
+        "build": "webpack --mode=development --env makeOpk",
         "dev": "webpack --watch --mode=development",
         "watch": "webpack --watch --mode=development"
     },
