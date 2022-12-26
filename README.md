@@ -1,5 +1,16 @@
 # overwolf-homeassistant-webhook
 
+Send game events from overwolf to HomeAssistant.
+
+## Helpers
+
+### Scrape game features
+
+Overwolf is an ever expanding and improving ecosystem. From time to time they add support for new games or new info/events in existing games.
+To make it easier for this app to stay up to date, a scraper has been implemented to export an updates list of `interestingFeatures` to be used in `src/consts.ts`.
+
+Just run the VSCode task `Scrape game features`, copy them and paste to the `consts.ts`.
+
 ## How to contribute
 
 ### VSCode setup
