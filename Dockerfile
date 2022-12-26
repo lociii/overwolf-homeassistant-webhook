@@ -18,3 +18,7 @@ USER node
 # make room for vscode extensions
 RUN mkdir -p /home/node/.vscode-server/extensions /home/node/.vscode-server-insiders/extensions
 RUN chown -R node:node /home/node/.vscode-server /home/node/.vscode-server-insiders
+
+# install node packages
+COPY --chown=node package*.json /app/
+RUN npm install
