@@ -88,19 +88,20 @@ class Config {
             return false
         }
 
-        // try to connect the url
-        let self = this
-        fetch(value, {
-            headers: { "Content-Type": "application/json" },
-            method: "POST",
-            body: JSON.stringify({ test: true }),
-        }).catch(function (err) {
-            self._errors["webhook_url"] = [
-                "Could not connect to URL, please make sure the ",
-                "HomeAssistant integration is properly set up",
-            ].join()
-            return false
-        })
+        // TODO this doesn't work as we're not asynchronous
+        // // try to connect the url
+        // let self = this
+        // fetch(value, {
+        //     headers: { "Content-Type": "application/json" },
+        //     method: "POST",
+        //     body: JSON.stringify([{ test: true }]),
+        // }).catch(function (err) {
+        //     self._errors["webhook_url"] = [
+        //         "Could not connect to URL, please make sure the ",
+        //         "HomeAssistant integration is properly set up",
+        //     ].join()
+        //     return false
+        // })
 
         return true
     }
