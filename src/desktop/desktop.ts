@@ -8,9 +8,9 @@ type Nullable<T> = T | null
 class Desktop extends AppWindow {
     private static _instance: Desktop
     private _config: Config
-    private _eventLog: Nullable<HTMLElement>
+    private _eventLog: Nullable<HTMLElement> = null
     private _eventBusListenerBound
-    private _overwolfEventBus: EventBus
+    private _overwolfEventBus: Nullable<EventBus> = null
 
     public static instance() {
         if (!this._instance) {
@@ -28,7 +28,9 @@ class Desktop extends AppWindow {
 
     protected async on_close(e: Event) {
         // remove eventbus listener when desktop window gets closed
-        this._overwolfEventBus.removeListener(this._eventBusListenerBound)
+        if (this._overwolfEventBus != null) {
+            this._overwolfEventBus.removeListener(this._eventBusListenerBound)
+        }
     }
 
     public async run() {
@@ -36,7 +38,9 @@ class Desktop extends AppWindow {
         this._overwolfEventBus =
             overwolf.windows.getMainWindow()._overwolfEventBus
         // add our desktop window listener
-        this._overwolfEventBus.addListener(this._eventBusListenerBound)
+        if (this._overwolfEventBus != null) {
+            this._overwolfEventBus.addListener(this._eventBusListenerBound)
+        }
 
         // make sure our settings get saved
         this._registerFormHandler()
@@ -90,8 +94,10 @@ class Desktop extends AppWindow {
                 // show field errors
                 const errors = this._config.getErrors()
                 for (let key in errors) {
-                    document.getElementById("error_" + key).innerHTML =
-                        errors[key]
+                    let element = document.getElementById("error_" + key)
+                    if (element != null) {
+                        element.innerHTML = errors[key]
+                    }
                 }
             } else {
                 formSuccessElement.classList.add("show")
@@ -105,7 +111,7 @@ class Desktop extends AppWindow {
         // listen to events on the eventbus
         switch (eventName) {
             case "log": {
-                if (this._eventLog) {
+                if (this._eventLog != null) {
                     this._eventLog.innerHTML =
                         eventValue + "<br>" + this._eventLog.innerHTML
                 }
