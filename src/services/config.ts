@@ -72,13 +72,19 @@ class Config {
             return false
         }
 
-        // check if nabu casa hook url
+        // check if nabu casa or local hook url
         if (
-            value_url.protocol != "https:" ||
-            value_url.host != "hooks.nabu.casa"
+            !(
+                value_url.protocol == "https:" &&
+                value_url.host == "hooks.nabu.casa"
+            ) &&
+            !(
+                value_url.protocol == "http:" &&
+                value_url.host == "homeassistant.local"
+            )
         ) {
             this._errors["webhook_url"] =
-                "Value must be a https://hooks.nabu.casa URL"
+                "Value must be a https://hooks.nabu.casa or http://homeassistant.local URL"
             return false
         }
 

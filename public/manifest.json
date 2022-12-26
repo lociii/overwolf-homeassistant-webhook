@@ -64,7 +64,7 @@
             }
         ],
         "externally_connectable": {
-            "matches": ["https://hooks.nabu.casa"]
+            "matches": ["https://hooks.nabu.casa", "http://homeassistant.local"]
         },
         "force_browser": "user",
         "developer": {
