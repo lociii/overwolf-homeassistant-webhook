@@ -16,26 +16,30 @@ type Nullable<T> = T | null
 
 class BackgroundController {
     // singleton instance holder
-    private static _instance: BackgroundController
+    private static _instance: Nullable<BackgroundController> = null
+
     // the game event listener that will actually connect to the game
     private _gameEventHelper: Nullable<OWGamesEvents>
+
     // remember which game was the last we started listening to
     private _currentGameId: Nullable<number> = null
-    private _currentGameName: string
+    private _currentGameName: string = ""
+
+    // helper objects
+    private _config: Config
     private _desktopWindow: OWWindow
     private _eventBus: EventBus
     private _publisher: Publisher
-    private _config: Config
 
     private constructor() {
         this._config = Config.instance()
+        this._desktopWindow = new OWWindow(windowNames.desktop)
         this._eventBus = new EventBus()
         this._publisher = new Publisher(this._config)
-        this._desktopWindow = new OWWindow(windowNames.desktop)
     }
 
     public static instance(): BackgroundController {
-        if (!BackgroundController._instance) {
+        if (BackgroundController._instance == null) {
             BackgroundController._instance = new BackgroundController()
         }
 
@@ -90,7 +94,7 @@ class BackgroundController {
 
     private startListening(gameId: number, gameName: string) {
         // check if our config is valid for reporting
-        if (!this._config.isValid()) {
+        if (this._config.isValid() == false) {
             return
         }
 
