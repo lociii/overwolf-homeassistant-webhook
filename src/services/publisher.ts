@@ -4,7 +4,7 @@ class Publisher {
     private _events: Object[]
     private _config: Config
     private active: boolean = false
-    private timeout: number
+    private timeout: NodeJS.Timeout
 
     constructor(config: Config) {
         this._events = []
@@ -44,9 +44,18 @@ class Publisher {
     }
 
     private eventuallySend() {
-        if (this._events.length) {
-            const events = this._events
-            this._events = []
+        const length: number = this._events.length
+        if (length > 0) {
+            // remove the elements from the stack
+            // this makes sure that we don't accidentially delete
+            // elements that we will send in the next run
+            const self = this
+            const events: Object[] = []
+            Array(length)
+                .fill(null)
+                .map(function () {
+                    events.push(self._events.shift())
+                })
 
             fetch(this._config.getWebhookUrl(), {
                 headers: { "Content-Type": "application/json" },
