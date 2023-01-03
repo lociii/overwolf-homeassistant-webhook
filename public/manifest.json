@@ -2,12 +2,12 @@
     "manifest_version": 1,
     "type": "WebApp",
     "meta": {
-        "name": "homeassistant-webhook",
+        "name": "HomeAssistant Game Events",
         "author": "BinaryBurger",
         "version": "1.0.0",
         "minimum-overwolf-version": "0.160.0",
-        "description": "HomeAssistant Webhook integration",
-        "dock_button_title": "HomeAssistant",
+        "description": "Forward game events to HomeAssistant",
+        "dock_button_title": "HomeAssistant Game Events",
         "icon": "icons/IconMouseOver.png",
         "icon_gray": "icons/IconMouseNormal.png",
         "launcher_icon": "icons/launcher_icon.ico",
@@ -64,7 +64,7 @@
             }
         ],
         "externally_connectable": {
-            "matches": ["https://hooks.nabu.casa", "http://homeassistant.local"]
+            "matches": ["https://hooks.nabu.casa", "http://*.local"]
         },
         "force_browser": "user",
         "developer": {
