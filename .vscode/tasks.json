@@ -1,0 +1,40 @@
+// Defines standard actions that can be executed using the `Tasks: Run Task` command
+// See https://go.microsoft.com/fwlink/?LinkId=733558 for documentation
+{
+    "version": "2.0.0",
+    "problemMatcher": [],
+    "presentation": {
+        "reveal": "always",
+        "panel": "new"
+    },
+    "type": "shell",
+    "tasks": [
+        {
+            "label": "Build",
+            "dependsOn": ["Build application"],
+            // mark as the default build task so cmd/ctrl+shift+b will create them
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Build application",
+            "command": "npm",
+            "args": ["run", "build"],
+            "group": "none"
+        },
+        {
+            "label": "Install dependencies",
+            "command": "npm",
+            "args": ["install"],
+            "group": "none"
+        },
+        {
+            "label": "Scrape game features",
+            "command": "npx",
+            "args": ["ts-node", "utility/scrape_features.ts"],
+            "group": "none"
+        }
+    ]
+}
