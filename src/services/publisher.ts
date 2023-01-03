@@ -34,11 +34,18 @@ class Publisher {
         this.timeout = null
     }
 
-    public push(event: string, gameId: number, gameName: string, data: Object) {
+    public push(
+        dataType: string,
+        gameId: number,
+        gameName: string,
+        gameShortName: string,
+        data: Object
+    ) {
         this._events.push({
-            event: event,
+            type: dataType,
             gameId: gameId,
             gameName: gameName,
+            gameShortName: gameShortName,
             data: data,
         })
     }

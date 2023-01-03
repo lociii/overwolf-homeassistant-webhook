@@ -24,6 +24,7 @@ class BackgroundController {
     // remember which game was the last we started listening to
     private _currentGameId: Nullable<number> = null
     private _currentGameName: string = ""
+    private _currentGameShortName: string = ""
 
     // helper objects
     private _config: Config
@@ -87,12 +88,20 @@ class BackgroundController {
                 this._gameEventHelper == null
             ) {
                 // start listening
-                this.startListening(e.gameInfo.classId, e.gameInfo.title)
+                this.startListening(
+                    e.gameInfo.classId,
+                    e.gameInfo.title,
+                    e.gameInfo.shortTitle
+                )
             }
         }
     }
 
-    private startListening(gameId: number, gameName: string) {
+    private startListening(
+        gameId: number,
+        gameName: string,
+        gameShortName: string
+    ) {
         // check if our config is valid for reporting
         if (this._config.isValid() == false) {
             return
@@ -110,6 +119,7 @@ class BackgroundController {
         this._publisher.start()
         this._currentGameId = gameId
         this._currentGameName = gameName
+        this._currentGameShortName = gameShortName
         this._eventBus.trigger(
             "log",
             "APP: Game event listener started for title: " + gameName
@@ -122,6 +132,7 @@ class BackgroundController {
         this._gameEventHelper = null
         this._currentGameId = null
         this._currentGameName = ""
+        this._currentGameShortName = ""
         this._eventBus.trigger(
             "log",
             "APP: Game event listener stopped: " + JSON.stringify(e)
@@ -136,6 +147,7 @@ class BackgroundController {
             "info",
             this._currentGameId,
             this._currentGameName,
+            this._currentGameShortName,
             data
         )
     }
@@ -148,6 +160,7 @@ class BackgroundController {
             "event",
             this._currentGameId,
             this._currentGameName,
+            this._currentGameShortName,
             data
         )
     }
