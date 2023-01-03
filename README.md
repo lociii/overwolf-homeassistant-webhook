@@ -1,6 +1,14 @@
 # overwolf-homeassistant-webhook
 
-Send game events from overwolf to HomeAssistant.
+Send game events from overwolf to Home Assistant.
+
+## Disclaimer
+
+This project is not endorsed by or affiliated with Overwolf or Home Assistant.
+
+## Setup
+
+A [step by step setup guide](https://github.com/lociii/homeassistant-overwolf-status/blob/main/info.md) has been added on the [Home Assistant integration repository](https://github.com/lociii/homeassistant-overwolf-status).
 
 ## Helpers
 
