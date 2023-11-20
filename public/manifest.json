@@ -7,7 +7,7 @@
         "version": "1.1.0",
         "minimum-overwolf-version": "0.160.0",
         "description": "Forward game events to HomeAssistant",
-        "dock_button_title": "HomeAssistant Game Events",
+        "dock_button_title": "HA Game Events",
         "icon": "icons/IconMouseOver.png",
         "icon_gray": "icons/IconMouseNormal.png",
         "launcher_icon": "icons/launcher_icon.ico",
