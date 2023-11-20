@@ -31,7 +31,6 @@
         "zip-a-folder": "^1.1.5",
         "minimatch": "^5.1.2",
         "eslint": "^8.30.0",
-        "ts-node": "^10.9.1",
-        "cheerio": "^1.0.0-rc.12"
+        "ts-node": "^10.9.1"
     }
 }
