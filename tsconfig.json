@@ -9,7 +9,7 @@
         "strict": true,
         "noImplicitAny": false,
         "strictNullChecks": false,
-        "types": ["@overwolf/types"],
+        "types": ["@overwolf/types", "node"],
         "rootDirs": ["./src"]
     },
     "exclude": ["node_modules"]
