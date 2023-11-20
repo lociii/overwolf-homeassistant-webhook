@@ -6,7 +6,8 @@ class Scraper {
     public async run() {
         const self = this
         await this._fetchGameList().then(function () {
-            self.export()
+            self.export_consts()
+            self.export_gameids()
         })
     }
 
@@ -42,7 +43,7 @@ class Scraper {
         })
     }
 
-    private async export() {
+    private async export_consts() {
         let code: string[] = []
         code.push("const interestingFeatures = {")
 
@@ -58,6 +59,10 @@ class Scraper {
         code.push("}")
 
         console.log(code.join("\n"))
+    }
+
+    private async export_gameids() {
+        console.log(Object.keys(this._data).join(", "))
     }
 }
 
