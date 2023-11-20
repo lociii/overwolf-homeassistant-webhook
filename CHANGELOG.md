@@ -9,10 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+-
+
+## 1.1.0 [2023-11-20]
+
+### Changed
+
 -   Event will now contain the short title of a game
 -   Event key `event` has been renamed to `type`
 -   Allow all .local URLs as hook targets
+-   Updated feature scraper
+-   Updated supported games and features
 
-## 1.0.0
+## 1.0.0 [2023-01-30]
 
 -   Initial release
