@@ -419,3 +419,9 @@ const interestingFeatures = {
         "game_info",
     ],
 }
+
+const windowNames = {
+    desktop: "desktop",
+}
+
+export { interestingFeatures, windowNames }
