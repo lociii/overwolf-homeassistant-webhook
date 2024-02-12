@@ -10,7 +10,7 @@ RUN chown node:node /app
 
 # install git (required for vscode)
 
-RUN apt -y update && apt -y --no-install-recommends install git
+RUN apt -y update && apt -y --no-install-recommends install git ca-certificates
 
 # switch to node user
 USER node
