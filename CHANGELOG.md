@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -
 
+## 1.2.0 [2024-02-12]
+
+### Changed
+
+-   Limit event log to 100 events
+-   Add button to manually clear event log
+-   Fix dev environment with GitHub Codespaces
+
 ## 1.1.0 [2023-11-20]
 
 ### Changed

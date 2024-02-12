@@ -4,7 +4,7 @@
     "meta": {
         "name": "HomeAssistant Game Events",
         "author": "BinaryBurger",
-        "version": "1.1.0",
+        "version": "1.2.0",
         "minimum-overwolf-version": "0.160.0",
         "description": "Forward game events to HomeAssistant",
         "dock_button_title": "HA Game Events",
