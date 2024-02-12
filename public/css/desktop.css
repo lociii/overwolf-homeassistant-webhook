@@ -42,7 +42,7 @@ h2 {
     display: inline-block;
 }
 
-.container div.row input:not([type="button"]) {
+.container input:not([type="button"]) {
     box-sizing: border-box;
     padding: 15px;
     border: none;
@@ -50,7 +50,7 @@ h2 {
     width: 30em;
 }
 
-.container div.row input[type="button"] {
+.container input[type="button"] {
     /* margin-left: 10em; */
     margin-top: 10px;
     padding: 5px 10px;
@@ -65,12 +65,12 @@ h2 {
     line-height: 20px;
 }
 
-.container div.row input[type="button"]:hover {
+.container input[type="button"]:hover {
     background-color: #d8f3ff;
     cursor: pointer;
 }
 
-.container div.row div.form-error {
+.container div.form-error {
     margin-left: 10em;
     padding: 3px 0 0 5px;
     color: #ff0000;
@@ -81,7 +81,7 @@ h2 {
 }
 
 #eventlog {
-    height: 100%;
+    height: 340px;
     overflow-x: hidden;
     overflow-y: scroll;
     word-wrap: break-word;

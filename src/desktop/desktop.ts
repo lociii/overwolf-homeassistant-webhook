@@ -45,6 +45,9 @@ class Desktop extends AppWindow {
         // make sure our settings get saved
         this._registerFormHandler()
 
+        // register handler to clear event log
+        this._registerClearHandler()
+
         // get the event log element
         this._eventLog = document.getElementById("eventlog")
     }
@@ -57,9 +60,10 @@ class Desktop extends AppWindow {
         const throttleElement = document.getElementById(
             "throttle"
         ) as HTMLInputElement
-        const buttonElement = document.getElementById(
+        const saveButtonElement = document.getElementById(
             "save"
         ) as HTMLInputElement
+
         const formErrorElement = document.getElementById(
             "form_error"
         ) as HTMLDivElement
@@ -72,7 +76,7 @@ class Desktop extends AppWindow {
         throttleElement.value = this._config.getThrottle().toLocaleString()
 
         // listen to clicks on the save button
-        buttonElement.onclick = (e) => {
+        saveButtonElement.onclick = (e) => {
             // reset results
             formSuccessElement.classList.remove("show")
             formErrorElement.classList.remove("show")
@@ -107,13 +111,25 @@ class Desktop extends AppWindow {
         }
     }
 
+    private _registerClearHandler() {
+        const clearButtonElement = document.getElementById(
+            "clear"
+        ) as HTMLInputElement
+
+        clearButtonElement.onclick = (e) => {
+            this._eventLog.innerHTML = ""
+        }
+    }
+
     private _eventBusListener(eventName: string, eventValue: object) {
         // listen to events on the eventbus
         switch (eventName) {
             case "log": {
                 if (this._eventLog != null) {
-                    this._eventLog.innerHTML =
-                        eventValue + "<br>" + this._eventLog.innerHTML
+                    const content = this._eventLog.innerHTML
+                        .split("<br>", 100)
+                        .join("<br>")
+                    this._eventLog.innerHTML = eventValue + "<br>" + content
                 }
             }
         }
