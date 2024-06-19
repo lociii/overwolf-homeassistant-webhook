@@ -17,7 +17,9 @@ A [step by step setup guide](https://github.com/lociii/homeassistant-overwolf-st
 Overwolf is an ever expanding and improving ecosystem. From time to time they add support for new games or new info/events in existing games.
 To make it easier for this app to stay up to date, a scraper has been implemented to export an updates list of `interestingFeatures` to be used in `src/consts.ts`.
 
-Just run the VSCode task `Scrape game features`, copy them and paste to the `consts.ts`.
+Just run the VSCode task `Scrape game features`, copy them and paste to the `src/consts.ts`.
+
+Then copy the list of game IDs and put the new values in all the relevant fields of `public/manifest.json`
 
 ## How to contribute
 
