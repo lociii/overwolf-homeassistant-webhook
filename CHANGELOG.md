@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -
 
+## 1.3.0 [2024-06-19]
+
+### Changed
+
+-   Updated supported games and features
+
 ## 1.2.0 [2024-02-12]
 
 ### Changed
