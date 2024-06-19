@@ -1,4 +1,4 @@
-FROM node:18.12-buster-slim
+FROM node:22.3-bookworm-slim
 
 ENV LC_ALL=C.UTF-8
 ARG DEBIAN_FRONTEND=noninteractive
