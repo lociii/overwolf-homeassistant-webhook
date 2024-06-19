@@ -51,5 +51,5 @@ Load the application as an unpackaged app in Overwolf:
 
 In order of first contribution date
 
--   [Arco "Text" Dielhof](https://github.com/Arco-Dielhof)
+-   [Arco "Tex" Dielhof](https://github.com/Arco-Dielhof)
 -   [Jens "loci" Nistler](https://github.com/lociii)
