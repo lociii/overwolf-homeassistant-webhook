@@ -4,6 +4,11 @@ const interestingFeatures = {
         "game_info",
         "addons",
     ],
+    4688: [
+        "gep_internal",
+        "game_info",
+        "match_info",
+    ],
     5426: [
         "gep_internal",
         "summoner_info",
@@ -83,6 +88,15 @@ const interestingFeatures = {
         "gep_internal",
         "game_info",
         "match_info",
+    ],
+    9898: [
+        "gep_internal",
+        "collection",
+        "scene_state",
+        "decks",
+        "match",
+        "match_info",
+        "arena",
     ],
     10624: [
         "gep_internal",
@@ -314,6 +328,10 @@ const interestingFeatures = {
         "match_info",
         "game_info",
     ],
+    22584: [
+        "gep_internal",
+        "match_info",
+    ],
     22638: [
         "gep_internal",
         "match_info",
@@ -387,6 +405,13 @@ const interestingFeatures = {
     ],
     23818: [
         "gep_internal",
+        "game_info",
+        "match_info",
+    ],
+    23930: [
+        "gep_internal",
+        "game_info",
+        "match_info",
     ],
     23944: [
         "gep_internal",
@@ -413,6 +438,16 @@ const interestingFeatures = {
         "gep_internal",
         "game_info",
         "match_info",
+    ],
+    24300: [
+        "gep_internal",
+        "game_info",
+        "match_info",
+    ],
+    24360: [
+        "gep_internal",
+        "match_info",
+        "game_info",
     ],
     215561: [
         "gep_internal",

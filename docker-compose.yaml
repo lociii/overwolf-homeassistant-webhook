@@ -6,8 +6,6 @@ services:
         user: node:node
         volumes:
             - .:/app:rw
-            - ohw-vscode-extensions:/home/app/.vscode-server/extensions
-            - ohw-vscode-insiders-extensions:/home/app/.vscode-server-insiders/extensions
         environment:
             HISTFILE: /app/.bash_history
         restart: unless-stopped

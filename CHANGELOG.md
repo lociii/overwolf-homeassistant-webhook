@@ -11,6 +11,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -
 
+## 1.4.0 [2024-08-21]
+
+### Changed
+
+-   Updated supported games and features
+    -   Added support for Dark and Darker
+    -   Added support for Hearthstone
+    -   Added support for Roblox
+    -   Added support for The First Descendant
+    -   Added support for Wuthering Waves
+    -   Improved support for Stormgate
+
 ## 1.3.0 [2024-06-19]
 
 ### Changed
