@@ -23,6 +23,8 @@ Then copy the list of game IDs and put the new values in all the relevant fields
 
 ## How to contribute
 
+To be able to actually run and test a development version, you need to be a developer that is allow-listed by Overwolf. See https://dev.overwolf.com/ow-native/reference/ow-sdk-introduction#get-whitelisted-as-a-developer for details. If you aren't whitelisted, the app just fails to be loaded.
+
 ### VSCode setup
 
 -   Install Docker Desktop for Windows
@@ -46,8 +48,6 @@ Load the application as an unpackaged app in Overwolf:
 -   Click on `Development options`
 -   Click `Load unpacked extension...`
 -   Select the `dist` folder.
-
-PS: There is little to no reason to try and run the app, if you're not whitelisted by Overwolf, the app will not work. They block it at some base level. So unless you actively have developed on Overwolf before, you will not be able to test the app.
 
 ## Contributors
 
