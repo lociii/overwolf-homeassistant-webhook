@@ -30,7 +30,7 @@ Then copy the list of game IDs and put the new values in all the relevant fields
 -   Open VSCode
 -   Install the [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension
 -   Open the project in the remote container
--   Dependencies will be installed automatically, you can however run the task `Install dependencies` to either install updated ones or just make it install them again.
+-   You need to run either `npm install` or the VSCode task `Install dependencies` to install the dependencies
 
 ### Build the application
 
@@ -41,11 +41,13 @@ Then copy the list of game IDs and put the new values in all the relevant fields
 Load the application as an unpackaged app in Overwolf:
 
 -   Open Overwolf
--   Open settings
+-   Open Settings
 -   Open the `About` tab
 -   Click on `Development options`
 -   Click `Load unpacked extension...`
 -   Select the `dist` folder.
+
+PS: There is little to no reason to try and run the app, if you're not whitelisted by Overwolf, the app will not work. They block it at some base level. So unless you actively have developed on Overwolf before, you will not be able to test the app.
 
 ## Contributors
 
