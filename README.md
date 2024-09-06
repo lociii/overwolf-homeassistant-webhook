@@ -55,3 +55,4 @@ In order of first contribution date
 
 -   [Arco "Tex" Dielhof](https://github.com/Arco-Dielhof)
 -   [Jens "loci" Nistler](https://github.com/lociii)
+-   [Ruan Heyns](https://github.com/RHeynsZa)

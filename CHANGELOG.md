@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -
 
+## 1.4.1 [2024-09-06]
+
+### Changed
+
+ - Fix minimum required Overwolf version, thanks [@RHeynsZa](https://github.com/RHeynsZa)
+
 ## 1.4.0 [2024-08-21]
 
 ### Changed
