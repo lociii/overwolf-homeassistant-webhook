@@ -23,6 +23,8 @@ Then copy the list of game IDs and put the new values in all the relevant fields
 
 ## How to contribute
 
+To be able to actually run and test a development version, you need to be a developer that is allow-listed by Overwolf. See https://dev.overwolf.com/ow-native/reference/ow-sdk-introduction#get-whitelisted-as-a-developer for details. If you aren't whitelisted, the app just fails to be loaded.
+
 ### VSCode setup
 
 -   Install Docker Desktop for Windows
@@ -30,7 +32,7 @@ Then copy the list of game IDs and put the new values in all the relevant fields
 -   Open VSCode
 -   Install the [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension
 -   Open the project in the remote container
--   Dependencies will be installed automatically, you can however run the task `Install dependencies` to either install updated ones or just make it install them again.
+-   You need to run either `npm install` or the VSCode task `Install dependencies` to install the dependencies
 
 ### Build the application
 
@@ -41,7 +43,7 @@ Then copy the list of game IDs and put the new values in all the relevant fields
 Load the application as an unpackaged app in Overwolf:
 
 -   Open Overwolf
--   Open settings
+-   Open Settings
 -   Open the `About` tab
 -   Click on `Development options`
 -   Click `Load unpacked extension...`
