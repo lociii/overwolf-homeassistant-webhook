@@ -11,11 +11,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -
 
+## 1.5.0 [2025-01-18]
+
+### Changed
+
+-   Updated supported games and features
+    -   Added support for League of Legends: Swarm
+    -   Added support for Supervive
+    -   Added support for Deadlock
+    -   Added support for Black Myth Wukong
+    -   Added support for Call of Duty: Black Ops 6 and Call of Duty: Warzone 2.0
+    -   Added support for Warhammer 40000 Space Marine 2
+    -   Added support for Path of Exile 2
+    -   Added support for Marvel Rivals
+    -   Removed support for [World of Tanks](https://dev.overwolf.com/ow-native/live-game-data-gep/supported-games/deprecated/world-of-tanks)
+    -   Removed support for [World of Warships](https://dev.overwolf.com/ow-native/live-game-data-gep/supported-games/deprecated/world-of-warships)
+-   Renovate environment
+
 ## 1.4.1 [2024-09-06]
 
 ### Changed
 
- - Fix minimum required Overwolf version, thanks [@RHeynsZa](https://github.com/RHeynsZa)
+-   Fix minimum required Overwolf version, thanks [@RHeynsZa](https://github.com/RHeynsZa)
 
 ## 1.4.0 [2024-08-21]
 

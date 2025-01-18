@@ -1,4 +1,4 @@
-FROM node:22.6-bookworm-slim
+FROM node:23-bookworm-slim
 
 ENV LC_ALL=C.UTF-8
 ARG DEBIAN_FRONTEND=noninteractive
