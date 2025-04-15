@@ -11,6 +11,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -
 
+## 1.6.0 [2025-04-14]
+
+-   Updated supported games and features
+    -   Added support for Street Fighter 6 (22894)
+    -   Added support for Monster Hunter Wilds (25446)
+    -   Added support for REPO (25448)
+    -   Removed support for League of Legends PBE: Arena (22848)
+    -   Removed support for Marvel Rivals (24890)
+    -   Removed support for Teamfight Tactics PBE (22848)
+    -   League of Legends, League of Legends: Arena and Teamfight Tactics are now all reported as Game ID 5426
+
 ## 1.5.0 [2025-01-18]
 
 ### Changed
