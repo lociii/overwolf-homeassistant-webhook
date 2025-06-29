@@ -9,7 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
--
+## 1.7.0 [2025-06-29]
+
+-   Updated supported games and features
+    -   Added support for League of Legends: Arena (22848)
+    -   Added support for Marvel Rivals (24890)
+    -   Added support for Schedule 1 (25610)
+    -   Added support for Splitgate 2 (25884)
+    -   Added support for Elden Ring Nightreign (25918)
+    -   Added support for Rematch (26120)
+    -   Added support for League of Legends: Arena PBE (215561)
+    -   Added support for Teamfight Tactics PBE (215701)
+    -   Removed support for Valheim (21668)
+    -   Removed support for Eternal Return (21672)
+    -   League of Legends: Arena (incl. PBE) and Teamfight Tactics (only PBE) are now reported with specific Game IDs again
+    -   Game scraper: Change how we decide which games are supported and which are not
 
 ## 1.6.0 [2025-04-14]
 
