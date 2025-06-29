@@ -22,8 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     -   Added support for Teamfight Tactics PBE (215701)
     -   Removed support for Valheim (21668)
     -   Removed support for Eternal Return (21672)
-    -   League of Legends: Arena (incl. PBE) and Teamfight Tactics (only PBE) are now reported with specific Game IDs again
-    -   Game scraper: Change how we decide which games are supported and which are not
+-   League of Legends: Arena (incl. PBE) and Teamfight Tactics (only PBE) are now reported with specific Game IDs again
+-   Game scraper: Change how we decide which games are supported and which are not
 
 ## 1.6.0 [2025-04-14]
 
@@ -34,7 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     -   Removed support for League of Legends PBE: Arena (22848)
     -   Removed support for Marvel Rivals (24890)
     -   Removed support for Teamfight Tactics PBE (22848)
-    -   League of Legends, League of Legends: Arena and Teamfight Tactics are now all reported as Game ID 5426
+-   League of Legends, League of Legends: Arena and Teamfight Tactics are now all reported as Game ID 5426
 
 ## 1.5.0 [2025-01-18]
 
