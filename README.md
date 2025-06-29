@@ -21,6 +21,8 @@ Just run the VSCode task `Scrape game features`, copy them and paste to the `src
 
 Then copy the list of game IDs and put the new values in all the relevant fields of `public/manifest.json`
 
+Check deprecations on https://dev.overwolf.com/ow-native/live-game-data-gep/supported-games/deprecated/overview/
+
 ## How to contribute
 
 To be able to actually run and test a development version, you need to be a developer that is allow-listed by Overwolf. See https://dev.overwolf.com/ow-native/reference/ow-sdk-introduction#get-whitelisted-as-a-developer for details. If you aren't whitelisted, the app just fails to be loaded.

@@ -22,7 +22,7 @@ class Scraper {
         const json = await response.json()
         json.forEach((game) => {
             // skip disabled or non-published games
-            if (game["disabled"] || !game["published"]) {
+            if (game["disabled"] || game["state"] == 0) {
                 return
             }
 
