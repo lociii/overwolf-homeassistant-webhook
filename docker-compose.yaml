@@ -9,7 +9,3 @@ services:
         environment:
             HISTFILE: /app/.bash_history
         restart: unless-stopped
-
-volumes:
-    ohw-vscode-extensions:
-    ohw-vscode-insiders-extensions:

@@ -9,9 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+## 1.8.0 [2025-11-20]
+
+-   Update supported games and features
+    -   Added support for Minecraft Bedrock (22176)
+    -   Added support for Peak (26092)
+    -   Added support for 2XKO (26840)
+    -   Extended support for Genshin Impact (21656)
+    -   Extended support for Elden Ring Nightreign (25918)
+    -   Removed support for Starcraft 2 (5855)
+    -   Removed support for Heroes of the Storm (10624)
+    -   Removed support for XDefiant (22994)
+    -   Removed support for Starfield (23222)
+    -   Removed support for Stormgate (23818)
+    -   Removed support for Manor lords (24176)
+    -   Removed support for Hades 2 (24218)
+    -   Removed support for The First Descendant (24360)
+-   Renovate development environment and update dependencies
+
 ## 1.7.0 [2025-06-29]
 
--   Updated supported games and features
+-   Update supported games and features
     -   Added support for League of Legends: Arena (22848)
     -   Added support for Marvel Rivals (24890)
     -   Added support for Schedule 1 (25610)
@@ -27,7 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 1.6.0 [2025-04-14]
 
--   Updated supported games and features
+-   Update supported games and features
     -   Added support for Street Fighter 6 (22894)
     -   Added support for Monster Hunter Wilds (25446)
     -   Added support for REPO (25448)
@@ -40,7 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
--   Updated supported games and features
+-   Update supported games and features
     -   Added support for League of Legends: Swarm
     -   Added support for Supervive
     -   Added support for Deadlock
@@ -63,7 +81,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
--   Updated supported games and features
+-   Update supported games and features
     -   Added support for Dark and Darker
     -   Added support for Hearthstone
     -   Added support for Roblox
@@ -75,7 +93,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
--   Updated supported games and features
+-   Update supported games and features
 
 ## 1.2.0 [2024-02-12]
 
@@ -92,8 +110,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   Event will now contain the short title of a game
 -   Event key `event` has been renamed to `type`
 -   Allow all .local URLs as hook targets
--   Updated feature scraper
--   Updated supported games and features
+-   Update feature scraper
+-   Update supported games and features
 
 ## 1.0.0 [2023-01-30]
 
