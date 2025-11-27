@@ -286,6 +286,7 @@ const interestingFeatures = {
     25918: ["gep_internal", "match_info", "game_info"],
     26092: ["gep_internal", "game_info", "match_info"],
     26120: ["gep_internal", "game_info", "match_info"],
+    26462: ["gep_internal", "game_info", "match_info"],
     26840: ["gep_internal", "game_info", "match_info"],
     // League of Legends: Arena PBE (Public Beta Environment)
     // special game ID, see https://dev.overwolf.com/ow-native/live-game-data-gep/supported-games/league-of-legends-arena/#game-events-status
