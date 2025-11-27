@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+## 1.9.0 [2025-11-27]
+
+-   Update supported games and features
+    -   Added support for Battlefield 6 (26462)
+
 ## 1.8.0 [2025-11-20]
 
 -   Update supported games and features
