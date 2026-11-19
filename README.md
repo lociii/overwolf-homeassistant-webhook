@@ -20,11 +20,11 @@ A [step by step setup guide](https://github.com/lociii/homeassistant-overwolf-st
 ### Scrape game features
 
 Overwolf is an ever expanding and improving ecosystem. From time to time they add support for new games or new info/events in existing games.
-To make it easier for this app to stay up to date, a scraper has been implemented to export an updates list of `interestingFeatures` to be used in `src/consts.ts`.
+Run `npm run scrape` or the VSCode task `Scrape game features` to update `interestingFeatures` in `src/consts.ts` and all game ID lists in `public/manifest.json` directly. Disabled games, unpublished games, and unpublished features are excluded; every included game also requests `gep_internal`.
 
-Just run the VSCode task `Scrape game features`, copy them and paste to the `src/consts.ts`.
+The scraper automatically formats both updated files with Prettier, resolving the local configuration for each file (including the settings in `package.json`).
 
-Then copy the list of game IDs and put the new values in all the relevant fields of `public/manifest.json`
+The generated feature map replaces the existing one, including any manual entries. Other source declarations and manifest settings are preserved. Failed requests, malformed responses, and missing source or manifest fields abort the update before either file is written.
 
 Check deprecations on https://dev.overwolf.com/ow-native/live-game-data-gep/supported-games/deprecated/overview/
 

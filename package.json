@@ -6,7 +6,8 @@
     "scripts": {
         "build": "webpack --mode=development --env makeOpk",
         "dev": "webpack --watch --mode=development",
-        "watch": "webpack --watch --mode=development"
+        "watch": "webpack --watch --mode=development",
+        "scrape": "ts-node utility/scrape_features.ts"
     },
     "keywords": [],
     "author": "",
@@ -22,15 +23,16 @@
         "@overwolf/types": "^3.24.9",
         "clean-webpack-plugin": "^4.0.0",
         "copy-webpack-plugin": "^13.0.1",
+        "eslint": "^9.39.1",
         "html-webpack-plugin": "^5.6.5",
+        "minimatch": "^10.1.1",
+        "prettier": "^3.10.1",
         "semver": "^7.7.3",
         "ts-loader": "^9.5.4",
+        "ts-node": "^10.9.2",
         "typescript": "^5.9.3",
         "webpack": "^5.103.0",
         "webpack-cli": "^6.0.1",
-        "zip-a-folder": "^4.0.4",
-        "minimatch": "^10.1.1",
-        "eslint": "^9.39.1",
-        "ts-node": "^10.9.2"
+        "zip-a-folder": "^4.0.4"
     }
 }
