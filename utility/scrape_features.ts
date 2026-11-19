@@ -97,9 +97,16 @@ export class Scraper {
             return
         }
 
-        const websiteNames = await this.scrapeGameNames()
+        const metadataNames = await this.fetchGameMetadataNames()
+        let websiteNames: Map<number, string> | undefined
         for (const gameId of missingNames) {
-            const name = websiteNames.get(Number(gameId))
+            let name = metadataNames.get(Number(gameId))
+            if (!name) {
+                if (!websiteNames) {
+                    websiteNames = await this.scrapeGameNames()
+                }
+                name = websiteNames.get(Number(gameId))
+            }
             if (!name) {
                 throw new Error(
                     `Could not determine game name for ID ${gameId}`
@@ -107,6 +114,80 @@ export class Scraper {
             }
             games[gameId].name = name
         }
+    }
+
+    private findVariableInitializer(
+        content: string,
+        variableName: string
+    ): ts.Expression | undefined {
+        const source = ts.createSourceFile(
+            "supported-games.js",
+            content,
+            ts.ScriptTarget.Latest,
+            true,
+            ts.ScriptKind.JS
+        )
+        for (const statement of source.statements) {
+            if (!ts.isVariableStatement(statement)) {
+                continue
+            }
+            for (const declaration of statement.declarationList.declarations) {
+                if (declaration.name.getText(source) === variableName) {
+                    return declaration.initializer
+                }
+            }
+        }
+        return undefined
+    }
+
+    private async fetchGameMetadataNames(): Promise<Map<number, string>> {
+        const response = await fetch(
+            "https://dev.overwolf.com/data/supported-games.js"
+        )
+        if (!response.ok) {
+            throw new Error(
+                `Failed to fetch GEP game metadata: HTTP ${response.status}`
+            )
+        }
+        const initializer = this.findVariableInitializer(
+            await response.text(),
+            "GamesMetaData"
+        )
+        if (!initializer || !ts.isObjectLiteralExpression(initializer)) {
+            throw new Error("GEP game metadata catalogue not found")
+        }
+        const names = new Map<number, string>()
+        for (const property of initializer.properties) {
+            if (
+                !ts.isPropertyAssignment(property) ||
+                !ts.isObjectLiteralExpression(property.initializer) ||
+                !(
+                    ts.isStringLiteral(property.name) ||
+                    ts.isNumericLiteral(property.name)
+                )
+            ) {
+                continue
+            }
+            const gameId = Number(property.name.text)
+            if (!Number.isSafeInteger(gameId) || gameId <= 0) {
+                continue
+            }
+            for (const field of property.initializer.properties) {
+                if (
+                    ts.isPropertyAssignment(field) &&
+                    (ts.isIdentifier(field.name) ||
+                        ts.isStringLiteral(field.name)) &&
+                    field.name.text === "name" &&
+                    ts.isStringLiteral(field.initializer)
+                ) {
+                    const name = this.normalizeGameName(field.initializer.text)
+                    if (name) {
+                        names.set(gameId, name)
+                    }
+                }
+            }
+        }
+        return names
     }
 
     private async scrapeGameNames(): Promise<Map<number, string>> {
@@ -122,46 +203,28 @@ export class Scraper {
         const scripts = /<script\b[^>]*>([\s\S]*?)<\/script\s*>/gi
         let script: RegExpExecArray | null
         while ((script = scripts.exec(html)) !== null) {
-            const source = ts.createSourceFile(
-                "supported-games.js",
+            const initializer = this.findVariableInitializer(
                 script[1],
-                ts.ScriptTarget.Latest,
-                true,
-                ts.ScriptKind.JS
+                "g_supportedGames"
             )
-            for (const statement of source.statements) {
-                if (!ts.isVariableStatement(statement)) {
+            if (!initializer || !ts.isArrayLiteralExpression(initializer)) {
+                continue
+            }
+            const catalogue: unknown = JSON.parse(initializer.getText())
+            if (!Array.isArray(catalogue)) {
+                throw new Error("Invalid supported games catalogue")
+            }
+            const names = new Map<number, string>()
+            for (const game of catalogue) {
+                if (!isRecord(game)) {
                     continue
                 }
-                for (const declaration of statement.declarationList
-                    .declarations) {
-                    if (
-                        declaration.name.getText(source) !==
-                            "g_supportedGames" ||
-                        !declaration.initializer ||
-                        !ts.isArrayLiteralExpression(declaration.initializer)
-                    ) {
-                        continue
-                    }
-                    const catalogue: unknown = JSON.parse(
-                        declaration.initializer.getText(source)
-                    )
-                    if (!Array.isArray(catalogue)) {
-                        throw new Error("Invalid supported games catalogue")
-                    }
-                    const names = new Map<number, string>()
-                    for (const game of catalogue) {
-                        if (!isRecord(game)) {
-                            continue
-                        }
-                        const name = this.normalizeGameName(game.name)
-                        if (typeof game.id === "number" && name) {
-                            names.set(game.id, name)
-                        }
-                    }
-                    return names
+                const name = this.normalizeGameName(game.name)
+                if (typeof game.id === "number" && name) {
+                    names.set(game.id, name)
                 }
             }
+            return names
         }
         throw new Error(
             "Supported games catalogue not found on Overwolf website"
