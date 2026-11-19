@@ -117,7 +117,7 @@ class Desktop extends AppWindow {
         ) as HTMLInputElement
 
         clearButtonElement.onclick = (e) => {
-            this._eventLog.innerHTML = ""
+            this._eventLog.textContent = ""
         }
     }
 
@@ -126,10 +126,15 @@ class Desktop extends AppWindow {
         switch (eventName) {
             case "log": {
                 if (this._eventLog != null) {
-                    const content = this._eventLog.innerHTML
-                        .split("<br>", 100)
-                        .join("<br>")
-                    this._eventLog.innerHTML = eventValue + "<br>" + content
+                    const entry = document.createElement("div")
+                    entry.textContent = String(eventValue)
+                    if (this._eventLog.childElementCount == 0) {
+                        this._eventLog.textContent = ""
+                    }
+                    this._eventLog.prepend(entry)
+                    while (this._eventLog.childElementCount > 100) {
+                        this._eventLog.lastElementChild.remove()
+                    }
                 }
             }
         }
