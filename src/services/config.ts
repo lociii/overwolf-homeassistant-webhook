@@ -69,6 +69,8 @@ class Config {
         }
 
         // check if nabu casa or local hook url
+        // this is a limitation of the Overwolf platform which requires defining the url in the manifest.json file.
+        // the only way to get around this is to use a local hook url or a nabu casa url.
         if (
             !(
                 value_url.protocol == "https:" &&
