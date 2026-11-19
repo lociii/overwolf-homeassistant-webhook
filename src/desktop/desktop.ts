@@ -73,7 +73,7 @@ class Desktop extends AppWindow {
 
         // set the current values
         webhookUrlElement.value = this._config.getWebhookUrl()
-        throttleElement.value = this._config.getThrottle().toLocaleString()
+        throttleElement.value = String(this._config.getThrottle())
 
         // listen to clicks on the save button
         saveButtonElement.onclick = (e) => {

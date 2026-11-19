@@ -15,10 +15,8 @@ class Config {
     constructor() {
         this._webhookUrl = window.localStorage.webhook_url || ""
 
-        const storedThrottle = new Number(
-            window.localStorage.throttle
-        ).valueOf()
-        if (isNaN(storedThrottle)) {
+        const storedThrottle = Number(window.localStorage.throttle)
+        if (!this._isValidThrottle(storedThrottle)) {
             this._throttle = 500
         } else {
             this._throttle = storedThrottle
@@ -38,7 +36,7 @@ class Config {
     }
 
     public isValid(): boolean {
-        return this._webhookUrl != "" && Number.isInteger(this._throttle)
+        return this._webhookUrl != "" && this._isValidThrottle(this._throttle)
     }
 
     public save(webhookUrl: string, throttle: string): boolean {
@@ -55,9 +53,7 @@ class Config {
 
         // store new, validated data
         this._webhookUrl = window.localStorage.webhook_url = webhookUrl
-        this._throttle = window.localStorage.throttle = new Number(
-            throttle
-        ).valueOf()
+        this._throttle = window.localStorage.throttle = Number(throttle)
         return true
     }
 
@@ -107,17 +103,16 @@ class Config {
     }
 
     private _validateThrottle(value: string): boolean {
-        let value_number = new Number(value).valueOf()
-        if (isNaN(value_number)) {
-            this._errors["throttle"] = "Throttle value is not a number"
-            return false
-        }
-        if (!Number.isInteger(value_number)) {
+        if (!this._isValidThrottle(Number(value))) {
             this._errors["throttle"] =
-                "Throttle value is not an integer. Please don't use decimals."
+                "Throttle must be an integer between 1 and 10000 milliseconds."
             return false
         }
         return true
+    }
+
+    private _isValidThrottle(value: number): boolean {
+        return Number.isInteger(value) && value >= 1 && value <= 10000
     }
 }
 
