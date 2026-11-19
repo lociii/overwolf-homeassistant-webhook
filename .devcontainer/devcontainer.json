@@ -12,6 +12,18 @@
     "workspaceFolder": "/app",
     // set the remote user to connect as
     "remoteUser": "node",
+    // mount ssh folder and git config to be able to use ssh keys for commit signing
+    // see https://dev.wiki.regiohelden.de/git/ for more details
+    // make sure to use relative paths to the home directory in your configs!
+    "mounts": [
+        "source=${localEnv:HOME}/.ssh,target=/home/node/.ssh,type=bind,readonly",
+        "source=${localEnv:HOME}/.config/git,target=/home/node/.config/git,type=bind,readonly"
+    ],
+    // initialize command to create the mount points for ssh and git config
+    // if they don't exist to prevent mount errors
+    "initializeCommand": {
+        "mkdir-mount": "mkdir -p /home/node/.ssh /home/node/.config/git || true"
+    },
     // configure vscode
     "customizations": {
         "vscode": {
