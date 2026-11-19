@@ -4,9 +4,9 @@ import { Config } from "../services/config"
 import { EventBus } from "../services/eventbus"
 import { Publisher } from "../services/publisher"
 
-// declare the eventbus property to be part of our Window definition
 declare global {
     interface Window {
+        _overwolfConfig: Config
         _overwolfEventBus: EventBus
     }
 }
@@ -50,6 +50,7 @@ class BackgroundController {
     public async run() {
         // These objects will be available via calling
         // overwolf.windows.getMainWindow() in other windows
+        window._overwolfConfig = this._config
         window._overwolfEventBus = this._eventBus
 
         // TODO: decide when to restore the desktop window

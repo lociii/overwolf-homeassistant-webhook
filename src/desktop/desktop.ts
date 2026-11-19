@@ -22,7 +22,7 @@ class Desktop extends AppWindow {
 
     private constructor() {
         super(windowNames.desktop)
-        this._config = Config.instance()
+        this._config = overwolf.windows.getMainWindow()._overwolfConfig
         this._eventBusListenerBound = this._eventBusListener.bind(this)
     }
 
