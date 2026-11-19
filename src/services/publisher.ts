@@ -32,6 +32,7 @@ class Publisher {
             clearTimeout(this.timeout)
         }
         this.timeout = null
+        this.eventuallySend()
     }
 
     public push(
