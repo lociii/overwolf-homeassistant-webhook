@@ -105,6 +105,7 @@ class Desktop extends AppWindow {
                 }
             } else {
                 formSuccessElement.classList.add("show")
+                this._overwolfEventBus.trigger("configSaved", {})
             }
 
             return false

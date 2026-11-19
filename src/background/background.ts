@@ -1,5 +1,5 @@
 import { windowNames, interestingFeatures } from "../consts"
-import { OWWindow, OWGamesEvents } from "@overwolf/overwolf-api-ts"
+import { OWWindow, OWGames, OWGamesEvents } from "@overwolf/overwolf-api-ts"
 import { Config } from "../services/config"
 import { EventBus } from "../services/eventbus"
 import { Publisher } from "../services/publisher"
@@ -19,7 +19,8 @@ class BackgroundController {
     private static _instance: Nullable<BackgroundController> = null
 
     // the game event listener that will actually connect to the game
-    private _gameEventHelper: Nullable<OWGamesEvents>
+    private _gameEventHelper: Nullable<OWGamesEvents> = null
+    private _gameInfoRequestId: number = 0
 
     // remember which game was the last we started listening to
     private _currentGameId: Nullable<number> = null
@@ -53,52 +54,70 @@ class BackgroundController {
         window._overwolfConfig = this._config
         window._overwolfEventBus = this._eventBus
 
-        // TODO: decide when to restore the desktop window
-        this._desktopWindow.restore()
-
         // wait for games to start/stop
-        overwolf.games.onGameInfoUpdated.addListener((e) => {
-            this.onGameInfoUpdated(e)
+        overwolf.games.onGameInfoUpdated.addListener(() => {
+            this.refreshRunningGame()
+        })
+        this._eventBus.addListener((eventName: string) => {
+            if (eventName == "configSaved") {
+                this.refreshRunningGame()
+            }
         })
         // just forward the error to the event bus
         overwolf.games.events.onError.addListener((e) => {
             this._eventBus.trigger("error", "APP: " + JSON.stringify(e))
         })
+
+        // TODO: decide when to restore the desktop window
+        this._desktopWindow.restore()
+        await this.refreshRunningGame()
     }
 
-    private onGameInfoUpdated(e) {
-        // game info event received
-        if (e && e.gameInfo) {
-            // no game running
-            if (e.gameInfo.isRunning == false) {
-                // unload listener if still active
-                if (this._gameEventHelper != null) {
-                    this.stopListening(e)
-                }
-                return
+    private async refreshRunningGame() {
+        const requestId = ++this._gameInfoRequestId
+        try {
+            const gameInfo = await OWGames.getRunningGameInfo()
+            if (requestId == this._gameInfoRequestId) {
+                this.updateRunningGame(gameInfo)
             }
-
-            if (
-                // game id sent
-                e.gameInfo.classId &&
-                // not the game we're currently listening to
-                e.gameInfo.classId != this._currentGameId &&
-                // game is supported
-                e.gameInfo.classId in interestingFeatures &&
-                // no listener running
-                this._gameEventHelper == null
-            ) {
-                // start listening
-                this.startListening(
-                    e.gameInfo.classId,
-                    e.gameInfo.title,
-                    e.gameInfo.shortTitle
-                )
-            }
+        } catch (error) {
+            this._eventBus.trigger(
+                "log",
+                "APP: Could not query running game: " + error
+            )
         }
     }
 
-    private startListening(
+    private updateRunningGame(
+        gameInfo: Nullable<overwolf.games.RunningGameInfo>
+    ) {
+        if (
+            !gameInfo ||
+            !gameInfo.isRunning ||
+            !(gameInfo.classId in interestingFeatures) ||
+            !this._config.isValid()
+        ) {
+            if (this._gameEventHelper != null) {
+                this.stopListening(gameInfo)
+            }
+            return
+        }
+
+        if (gameInfo.classId == this._currentGameId) {
+            return
+        }
+
+        if (this._gameEventHelper != null) {
+            this.stopListening(gameInfo)
+        }
+        this.startListening(
+            gameInfo.classId,
+            gameInfo.title,
+            gameInfo.shortTitle
+        )
+    }
+
+    private async startListening(
         gameId: number,
         gameName: string,
         gameShortName: string
@@ -108,29 +127,54 @@ class BackgroundController {
             return
         }
 
-        // subscribe game events
-        this._gameEventHelper = new OWGamesEvents(
+        const gameEventHelper = new OWGamesEvents(
             {
-                onInfoUpdates: this.publishInfo.bind(this),
-                onNewEvents: this.publishEvent.bind(this),
+                onInfoUpdates: (data: Object) => {
+                    if (this._gameEventHelper == gameEventHelper) {
+                        this.publishInfo(data)
+                    }
+                },
+                onNewEvents: (data: Object) => {
+                    if (this._gameEventHelper == gameEventHelper) {
+                        this.publishEvent(data)
+                    }
+                },
             },
             interestingFeatures[gameId]
         )
-        this._gameEventHelper.start()
-        this._publisher.start()
+        this._gameEventHelper = gameEventHelper
         this._currentGameId = gameId
         this._currentGameName = gameName
         this._currentGameShortName = gameShortName
-        this._eventBus.trigger(
-            "log",
-            "APP: Game event listener started for title: " + gameName
-        )
+        this._publisher.start()
+        try {
+            await gameEventHelper.start()
+            if (this._gameEventHelper != gameEventHelper) {
+                gameEventHelper.stop()
+                return
+            }
+            this._eventBus.trigger(
+                "log",
+                "APP: Game event listener started for title: " + gameName
+            )
+        } catch (error) {
+            if (this._gameEventHelper == gameEventHelper) {
+                this.stopListening({ error: String(error) })
+                this._eventBus.trigger(
+                    "log",
+                    "APP: Could not start game event listener: " + error
+                )
+            } else {
+                gameEventHelper.stop()
+            }
+        }
     }
 
     private stopListening(e) {
-        this._gameEventHelper.stop()
-        this._publisher.stop()
+        const gameEventHelper = this._gameEventHelper
         this._gameEventHelper = null
+        gameEventHelper.stop()
+        this._publisher.stop()
         this._currentGameId = null
         this._currentGameName = ""
         this._currentGameShortName = ""
