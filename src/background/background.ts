@@ -211,16 +211,14 @@ class BackgroundController {
     }
 
     private _tryDecodeStringifiedJSON(data: Object) {
-        // some fields in overwolf responses are stringified json
-        // we try to find and decode them
-        for (let key in data) {
-            if (typeof data[key] == "object") {
-                this._tryDecodeStringifiedJSON(data[key])
-            } else if (typeof data[key] == "string") {
-                // try to parse the string as json
+        for (const fieldName of Object.keys(data)) {
+            if (typeof data[fieldName] == "string") {
                 try {
-                    data[key] = JSON.parse(data[key])
+                    data[fieldName] = JSON.parse(data[fieldName])
                 } catch (_) {}
+            }
+            if (data[fieldName] !== null && typeof data[fieldName] == "object") {
+                this._tryDecodeStringifiedJSON(data[fieldName])
             }
         }
     }
