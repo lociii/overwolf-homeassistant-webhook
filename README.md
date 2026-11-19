@@ -24,6 +24,8 @@ Run `npm run scrape` or the VSCode task `Scrape game features` to update `intere
 
 The scraper automatically formats both updated files with Prettier, resolving the local configuration for each file (including the settings in `package.json`).
 
+Each game section in `src/consts.ts` includes a game-name comment from the update feed. Missing names are scraped from Overwolf's supported-games website. If a name cannot be resolved, the update aborts before writing either file.
+
 The generated feature map replaces the existing one, including any manual entries. Other source declarations and manifest settings are preserved. Failed requests, malformed responses, and missing source or manifest fields abort the update before either file is written.
 
 Check deprecations on https://dev.overwolf.com/ow-native/live-game-data-gep/supported-games/deprecated/overview/

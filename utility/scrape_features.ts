@@ -3,6 +3,11 @@ import { resolve } from "node:path"
 import * as prettier from "prettier"
 import * as ts from "typescript"
 
+interface GameDefinition {
+    name: string
+    features: string[]
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
     return typeof value === "object" && value !== null && !Array.isArray(value)
 }
@@ -14,11 +19,12 @@ export class Scraper {
     constructor(private projectRoot: string = resolve(__dirname, "..")) {}
 
     public async run() {
-        const features = await this._fetchGameList()
-        await this.updateSources(features)
+        const games = await this._fetchGameList()
+        await this.resolveGameNames(games)
+        await this.updateSources(games)
     }
 
-    private async _fetchGameList(): Promise<Record<number, string[]>> {
+    private async _fetchGameList(): Promise<Record<number, GameDefinition>> {
         const response: Response = await fetch(this._url, {
             method: "GET",
         })
@@ -33,7 +39,7 @@ export class Scraper {
             throw new Error("Game list must be an array")
         }
 
-        const features: Record<number, string[]> = {}
+        const gamesById: Record<number, GameDefinition> = {}
         for (const game of games) {
             if (!isRecord(game)) {
                 throw new Error("Invalid game entry")
@@ -48,7 +54,7 @@ export class Scraper {
                 !Number.isSafeInteger(gameId) ||
                 gameId <= 0 ||
                 !Array.isArray(game.features) ||
-                Object.prototype.hasOwnProperty.call(features, gameId)
+                Object.prototype.hasOwnProperty.call(gamesById, gameId)
             ) {
                 throw new Error("Invalid or duplicate game ID or feature list")
             }
@@ -66,15 +72,103 @@ export class Scraper {
                 }
                 gameFeatures.add(feature.name)
             }
-            features[gameId] = [...gameFeatures]
+            gamesById[gameId] = {
+                name: this.normalizeGameName(game.name),
+                features: [...gameFeatures],
+            }
         }
-        if (Object.keys(features).length === 0) {
+        if (Object.keys(gamesById).length === 0) {
             throw new Error("Game list contains no enabled, published games")
         }
-        return features
+        return gamesById
     }
 
-    private async updateSources(features: Record<number, string[]>) {
+    private normalizeGameName(value: unknown): string {
+        return typeof value === "string"
+            ? value.replace(/\s+/g, " ").trim()
+            : ""
+    }
+
+    private async resolveGameNames(games: Record<number, GameDefinition>) {
+        const missingNames = Object.keys(games).filter(
+            (gameId) => !games[gameId].name
+        )
+        if (missingNames.length === 0) {
+            return
+        }
+
+        const websiteNames = await this.scrapeGameNames()
+        for (const gameId of missingNames) {
+            const name = websiteNames.get(Number(gameId))
+            if (!name) {
+                throw new Error(
+                    `Could not determine game name for ID ${gameId}`
+                )
+            }
+            games[gameId].name = name
+        }
+    }
+
+    private async scrapeGameNames(): Promise<Map<number, string>> {
+        const response = await fetch(
+            "https://www.overwolf.com/supported-games/"
+        )
+        if (!response.ok) {
+            throw new Error(
+                `Failed to fetch supported games website: HTTP ${response.status}`
+            )
+        }
+        const html = await response.text()
+        const scripts = /<script\b[^>]*>([\s\S]*?)<\/script\s*>/gi
+        let script: RegExpExecArray | null
+        while ((script = scripts.exec(html)) !== null) {
+            const source = ts.createSourceFile(
+                "supported-games.js",
+                script[1],
+                ts.ScriptTarget.Latest,
+                true,
+                ts.ScriptKind.JS
+            )
+            for (const statement of source.statements) {
+                if (!ts.isVariableStatement(statement)) {
+                    continue
+                }
+                for (const declaration of statement.declarationList
+                    .declarations) {
+                    if (
+                        declaration.name.getText(source) !==
+                            "g_supportedGames" ||
+                        !declaration.initializer ||
+                        !ts.isArrayLiteralExpression(declaration.initializer)
+                    ) {
+                        continue
+                    }
+                    const catalogue: unknown = JSON.parse(
+                        declaration.initializer.getText(source)
+                    )
+                    if (!Array.isArray(catalogue)) {
+                        throw new Error("Invalid supported games catalogue")
+                    }
+                    const names = new Map<number, string>()
+                    for (const game of catalogue) {
+                        if (!isRecord(game)) {
+                            continue
+                        }
+                        const name = this.normalizeGameName(game.name)
+                        if (typeof game.id === "number" && name) {
+                            names.set(game.id, name)
+                        }
+                    }
+                    return names
+                }
+            }
+        }
+        throw new Error(
+            "Supported games catalogue not found on Overwolf website"
+        )
+    }
+
+    private async updateSources(games: Record<number, GameDefinition>) {
         const constsPath = resolve(this.projectRoot, "src/consts.ts")
         const manifestPath = resolve(this.projectRoot, "public/manifest.json")
         const [consts, manifestSource] = await Promise.all([
@@ -110,14 +204,14 @@ export class Scraper {
             )
         }
 
-        const gameIds = Object.keys(features)
+        const gameIds = Object.keys(games)
             .map(Number)
             .sort((first, second) => first - second)
         const entries = gameIds.map((gameId) => {
-            const names = features[gameId].map(
+            const names = games[gameId].features.map(
                 (name) => `        ${JSON.stringify(name)},`
             )
-            return `    ${gameId}: [\n${names.join("\n")}\n    ],`
+            return `    // ${games[gameId].name}\n    ${gameId}: [\n${names.join("\n")}\n    ],`
         })
         const initializer = declarations[0].initializer
         const updatedConsts = await this.formatSource(
