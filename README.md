@@ -5,6 +5,8 @@ Send game events from overwolf to Home Assistant.
 Events are sent fire and forget. There will be no validation that they were actually received and processed.
 This delivery behavior is intentional: batches are discarded from the local queue when sent, HTTP response statuses are not checked, and failed requests are not retried. Network failures are logged, but the app does not track delivery or processing status.
 
+The throttle controls the interval between batch sends, not the number of concurrent requests. Sends do not wait for previous requests to finish, so slow endpoints can leave multiple requests in flight and batches may arrive out of order. There is no application-level request timeout, concurrency limit, or batch-size limit.
+
 ## Disclaimer
 
 This project is not endorsed by or affiliated with Overwolf or Home Assistant.
