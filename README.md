@@ -2,6 +2,9 @@
 
 Send game events from overwolf to Home Assistant.
 
+Events are sent fire and forget. There will be no validation that they were actually received and processed.
+This delivery behavior is intentional: batches are discarded from the local queue when sent, HTTP response statuses are not checked, and failed requests are not retried. Network failures are logged, but the app does not track delivery or processing status.
+
 ## Disclaimer
 
 This project is not endorsed by or affiliated with Overwolf or Home Assistant.
@@ -29,32 +32,32 @@ To be able to actually run and test a development version, you need to be a deve
 
 ### VSCode setup
 
--   Install Docker Desktop for Windows
--   Install VSCode
--   Open VSCode
--   Install the [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension
--   Open the project in the remote container
--   You need to run either `npm install` or the VSCode task `Install dependencies` to install the dependencies
+- Install Docker Desktop for Windows
+- Install VSCode
+- Open VSCode
+- Install the [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension
+- Open the project in the remote container
+- You need to run either `npm install` or the VSCode task `Install dependencies` to install the dependencies
 
 ### Build the application
 
--   Run the VSCode task `Build` (`CTRL + Shift + B` or `CMD + Shift + B` by default)
+- Run the VSCode task `Build` (`CTRL + Shift + B` or `CMD + Shift + B` by default)
 
 ### Test it
 
 Load the application as an unpackaged app in Overwolf:
 
--   Open Overwolf
--   Open Settings
--   Open the `About` tab
--   Click on `Development options`
--   Click `Load unpacked extension...`
--   Select the `dist` folder.
+- Open Overwolf
+- Open Settings
+- Open the `About` tab
+- Click on `Development options`
+- Click `Load unpacked extension...`
+- Select the `dist` folder.
 
 ## Contributors
 
 In order of first contribution date
 
--   [Arco "Tex" Dielhof](https://github.com/Arco-Dielhof)
--   [Jens "loci" Nistler](https://github.com/lociii)
--   [Ruan Heyns](https://github.com/RHeynsZa)
+- [Arco "Tex" Dielhof](https://github.com/Arco-Dielhof)
+- [Jens "loci" Nistler](https://github.com/lociii)
+- [Ruan Heyns](https://github.com/RHeynsZa)
