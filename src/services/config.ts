@@ -36,7 +36,10 @@ class Config {
     }
 
     public isValid(): boolean {
-        return this._webhookUrl != "" && this._isValidThrottle(this._throttle)
+        return (
+            this._validateWebhookUrl(this._webhookUrl) &&
+            this._isValidThrottle(this._throttle)
+        )
     }
 
     public save(webhookUrl: string, throttle: string): boolean {
