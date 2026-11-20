@@ -1,6 +1,9 @@
 const interestingFeatures = {
-    765: ["gep_internal", "game_info"],
+    // World of Warcraft
+    765: ["gep_internal", "game_info", "location ", "player_info"],
+    // Roblox
     4688: ["gep_internal", "game_info", "match_info"],
+    // League of Legends
     5426: [
         "gep_internal",
         "summoner_info",
@@ -25,9 +28,13 @@ const interestingFeatures = {
         "chat",
         "announcer",
         "panel_location",
+        "augments",
     ],
+    // Final Fantasy XIV
     6350: ["gep_internal", "match_info"],
+    // Path of Exile
     7212: ["gep_internal", "kill", "death", "match_info", "me", "game_info"],
+    // Dota 2
     7314: [
         "gep_internal",
         "party",
@@ -48,23 +55,16 @@ const interestingFeatures = {
         "clock_time_changed",
         "game_state",
         "damage",
+        "counters",
     ],
+    // Minecraft
     8032: ["gep_internal", "game_info", "match_info", "counters", "mods"],
-    8954: ["gep_internal", "game_info", "match_info"],
-    9898: [
-        "gep_internal",
-        "collection",
-        "scene_state",
-        "decks",
-        "match",
-        "match_info",
-        "arena",
-    ],
+    // Warframe
+    8954: ["gep_internal", "game_info", "match_info", "chat"],
+    // Rocket League
     10798: [
         "gep_internal",
         "stats",
-        "teamGoal",
-        "opposingTeamGoal",
         "match",
         "roster",
         "me",
@@ -73,6 +73,7 @@ const interestingFeatures = {
         "game_info",
         "training",
     ],
+    // Tom Clancy's Rainbow Six: Siege
     10826: [
         "gep_internal",
         "game_info",
@@ -83,7 +84,9 @@ const interestingFeatures = {
         "match_info",
         "me",
         "defuser",
+        "damage",
     ],
+    // Overwatch 2
     10844: [
         "gep_internal",
         "match_info",
@@ -93,6 +96,7 @@ const interestingFeatures = {
         "game_info",
         "roster",
     ],
+    // League of Legends Launcher
     10902: [
         "gep_internal",
         "summoner_info",
@@ -103,6 +107,7 @@ const interestingFeatures = {
         "lcu_info",
         "game_info",
     ],
+    // PLAYERUNKNOWN'S BATTLEGROUNDS
     10906: [
         "gep_internal",
         "kill",
@@ -120,26 +125,9 @@ const interestingFeatures = {
         "counters",
         "match_info",
         "victimName",
+        "kill_feed",
     ],
-    // League of legends: Swarm
-    // special game ID, see https://dev.overwolf.com/ow-native/live-game-data-gep/supported-games/league-of-legends-swarm/
-    13956: [
-        "gep_internal",
-        "match",
-        "death",
-        "abilities",
-        "minions",
-        "chat",
-        "teams",
-        "counters",
-        "team_frames",
-        "respawn",
-        "match_info",
-        "matchState",
-        "damage",
-        "summoner_info",
-        "live_client_data",
-    ],
+    // Fortnite Battle Royale
     21216: [
         "gep_internal",
         "items",
@@ -159,7 +147,9 @@ const interestingFeatures = {
         "map",
         "game_info",
     ],
+    // Magic the Gathering: Arena
     21308: ["gep_internal", "game_info", "match_info"],
+    // Splitgate: Arena Warfare
     21404: [
         "gep_internal",
         "game_info",
@@ -173,6 +163,7 @@ const interestingFeatures = {
         "death",
         "portal",
     ],
+    // LOL Arena
     21556: [
         "gep_internal",
         "match",
@@ -185,6 +176,7 @@ const interestingFeatures = {
         "heal",
         "teams",
     ],
+    // Apex Legends
     21566: [
         "gep_internal",
         "match_state",
@@ -202,8 +194,10 @@ const interestingFeatures = {
         "inventory",
         "match_info",
         "game_info",
-        "localization",
+        "player_stats",
+        "ring",
     ],
+    // Teamfight Tactics
     21570: [
         "gep_internal",
         "match_info",
@@ -214,31 +208,39 @@ const interestingFeatures = {
         "bench",
         "carousel",
         "live_client_data",
+        "match_stats",
     ],
+    // Legends of Runeterra
     21620: ["gep_internal", "game_client_data", "match_info"],
+    // Escape from Tarkov
     21634: ["gep_internal", "match_info", "game_info"],
+    // Valorant
     21640: ["gep_internal", "game_info", "me", "kill", "death", "match_info"],
+    // Genshin Impact
     21656: ["gep_internal", "game_info", "match_info"],
+    // New World
     21816: ["gep_internal", "game_info"],
-    21848: ["gep_internal", "game_info", "match_info"],
-    21854: [
-        "gep_internal",
-        "match_info",
-        "game_info",
-        "kill",
-        "death",
-        "assist",
-    ],
+    // Lost Ark
     21864: ["gep_internal", "game_info", "match_info", "location"],
+    // Call of Duty: Vanguard
     21876: ["gep_internal", "match_info", "game_info", "me", "kill", "death"],
+    // Baldur's Gate III
     22088: ["gep_internal", "game_info", "match_info", "location"],
+    // Minecraft Bedrock
     22176: ["gep_internal", "match_info", "game_info"],
+    // Call of Duty: Modern Warfare II
     22328: ["gep_internal", "match_info", "game_info"],
+    // Dark and Darker
     22584: ["gep_internal", "match_info"],
+    // Sons Of The Forest
     22638: ["gep_internal", "match_info", "location"],
+    // Diablo IV
     22700: ["gep_internal", "match_info", "game_info", "location", "me"],
-    22730: ["gep_internal", "match_info", "live_data"],
+    // Counter-Strike Global Offensive 2
+    22730: ["gep_internal", "match_info", "live_data", "chat"],
+    // Honkai: Star Rail
     22804: ["gep_internal", "game_info", "match_info"],
+    // League of Legends PBE
     22848: [
         "gep_internal",
         "summoner_info",
@@ -263,33 +265,99 @@ const interestingFeatures = {
         "chat",
         "announcer",
     ],
+    // Street Fighter 6
     22894: ["gep_internal", "match_info", "game_info"],
-    23424: ["gep_internal", "match_info", "game_info"],
+    // ARK: Survival Ascended
+    23476: ["gep_internal", "match_info", "location", "game_info"],
+    // The Finals
     23478: ["gep_internal", "game_info", "match_info"],
+    // Lethal Company
     23522: ["gep_internal", "game_info", "match_info"],
+    // Once Human
     23930: ["gep_internal", "game_info", "match_info"],
+    // Palworld
     23944: ["gep_internal", "game_info", "match_info", "location"],
+    // HELLDIVERS 2
     24000: ["gep_internal", "game_info", "match_info"],
+    // Content Warning
     24110: ["gep_internal", "game_info", "match_info"],
+    // Wuthering Waves
     24300: ["gep_internal", "game_info", "match_info"],
+    // Supervive
     24346: ["gep_internal", "match_info", "game_info"],
+    // Deadlock
     24482: ["gep_internal", "game_info", "match_info"],
+    // Black Myth: Wukong
     24504: ["gep_internal", "game_info", "match_info"],
-    24542: ["gep_internal", "game_info", "match_info"],
+    // Warhammer 40000 Space Marine 2
     24548: ["gep_internal", "match_info", "game_info"],
+    // Path of Exile 2
     24886: ["gep_internal", "me", "match_info", "death", "kill", "game_info"],
+    // Marvel Rivals
     24890: ["gep_internal", "match_info", "game_info"],
+    // Monster Hunter Wilds
     25446: ["gep_internal", "game_info", "match_info"],
+    // R.E.P.O
     25448: ["gep_internal", "match_info", "game_info"],
+    // Schedule I
     25610: ["gep_internal", "game_info", "match_info", "location"],
+    // Splitgate 2
     25884: ["gep_internal", "match_info", "game_info"],
+    // ELDEN RING NIGHTREIGN
     25918: ["gep_internal", "match_info", "game_info"],
+    // PEAK
     26092: ["gep_internal", "game_info", "match_info"],
+    // Rematch
     26120: ["gep_internal", "game_info", "match_info"],
+    // Battlefield 6
     26462: ["gep_internal", "game_info", "match_info"],
+    // 2XKO
     26840: ["gep_internal", "game_info", "match_info"],
-    // League of Legends: Arena PBE (Public Beta Environment)
-    // special game ID, see https://dev.overwolf.com/ow-native/live-game-data-gep/supported-games/league-of-legends-arena/#game-events-status
+    // ARC Raiders
+    27168: ["gep_internal", "match_info", "game_info"],
+    // Hytale
+    27618: ["gep_internal", "match_info", "game_info"],
+    // Arknight: Endfield
+    27724: ["gep_internal", "match_info", "location", "game_info"],
+    // Slay the Spire 2
+    27858: ["gep_internal", "player_info", "match_info"],
+    // Call of Duty General Instance
+    27860: ["gep_internal", "game_info", "match_info"],
+    // Windrose
+    27886: ["gep_internal", "Location"],
+    // Subnautica 2
+    27936: ["gep_internal", "game_info", "match_info", "location "],
+    // Teamfight Tactics PBE
+    28162: [
+        "gep_internal",
+        "live_client_data",
+        "carousel",
+        "bench",
+        "board",
+        "store",
+        "roster",
+        "me",
+        "match_info",
+        "augments",
+    ],
+    // Teamfight Tactics
+    28164: [
+        "gep_internal",
+        "match_info",
+        "me",
+        "roster",
+        "store",
+        "board",
+        "bench",
+        "carousel",
+        "match_stats",
+        "game_flow",
+    ],
+    // WoW Forever
+    28268: ["gep_internal", "player_info", "game_info"],
+    // Roblox - Rivals
+    46883: ["gep_internal", "match_info", "game_info"],
+    // LOL Arena PBE
     215561: [
         "gep_internal",
         "live_client_data",
@@ -302,21 +370,6 @@ const interestingFeatures = {
         "heal",
         "teams",
     ],
-    // Teamfight Tactics PBE (Public Beta Environment)
-    // special game ID, see https://dev.overwolf.com/ow-native/live-game-data-gep/supported-games/teamfight-tactics/
-    215701: [
-        "gep_internal",
-        "live_client_data",
-        "carousel",
-        "bench",
-        "board",
-        "store",
-        "roster",
-        "me",
-        "match_info",
-        "augments",
-    ],
-    234241: ["gep_internal", "game_info", "match_info"],
 }
 
 const windowNames = {
