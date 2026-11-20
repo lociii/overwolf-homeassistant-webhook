@@ -1,10 +1,11 @@
 import { windowNames, interestingFeatures } from "../consts"
-import { OWWindow, OWGames, OWGamesEvents } from "@overwolf/overwolf-api-ts"
+import { OWWindow, OWGames } from "@overwolf/overwolf-api-ts"
 import { Config } from "../services/config"
 import { EventBus } from "../services/eventbus"
 import type { AppEventArguments } from "../services/eventbus"
 import { Publisher } from "../services/publisher"
 import { decodeGameData, isGameData } from "../services/game-data"
+import { GameEventListener } from "../services/game-event-listener"
 
 declare global {
     interface Window {
@@ -21,7 +22,7 @@ class BackgroundController {
     private static _instance: Nullable<BackgroundController> = null
 
     // the game event listener that will actually connect to the game
-    private _gameEventHelper: Nullable<OWGamesEvents> = null
+    private _gameEventHelper: Nullable<GameEventListener> = null
     private _gameInfoRequestId: number = 0
 
     // remember which game was the last we started listening to
@@ -133,7 +134,7 @@ class BackgroundController {
             return
         }
 
-        const gameEventHelper = new OWGamesEvents(
+        const gameEventHelper = new GameEventListener(
             {
                 onInfoUpdates: (data: unknown) => {
                     if (
@@ -158,13 +159,17 @@ class BackgroundController {
         this._currentGameId = gameId
         this._currentGameName = gameName
         this._currentGameShortName = gameShortName
-        this._publisher.start()
+        this._eventBus.trigger(
+            "log",
+            "APP: Starting game event listener for title: " + gameName
+        )
         try {
             await gameEventHelper.start()
             if (this._gameEventHelper != gameEventHelper) {
                 gameEventHelper.stop()
                 return
             }
+            this._publisher.start()
             this._eventBus.trigger(
                 "log",
                 "APP: Game event listener started for title: " + gameName

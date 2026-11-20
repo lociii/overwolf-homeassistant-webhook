@@ -17,6 +17,8 @@ This project is not endorsed by or affiliated with Overwolf or Home Assistant.
 
 A [step by step setup guide](https://github.com/lociii/homeassistant-overwolf-status/blob/main/info.md) has been added on the [Home Assistant integration repository](https://github.com/lociii/homeassistant-overwolf-status).
 
+The event log distinguishes listener startup, successful startup, and failures. Startup requires at least one requested feature to be supported and a successful initial game-info query. Failed feature registration is attempted up to 10 times, 3 seconds apart; each provider callback has a 10-second timeout. Stopping or switching games cancels pending startup and retries.
+
 ## Helpers
 
 ### Scrape game features
