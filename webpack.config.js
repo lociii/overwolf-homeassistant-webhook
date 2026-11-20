@@ -14,7 +14,12 @@ module.exports = (env) => ({
         rules: [
             {
                 test: /\.ts?$/,
-                use: "ts-loader",
+                use: {
+                    loader: "esbuild-loader",
+                    options: {
+                        target: "es2017",
+                    },
+                },
                 exclude: /node_modules/,
             },
         ],

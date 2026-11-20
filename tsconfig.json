@@ -1,16 +1,16 @@
 {
     "compilerOptions": {
         "target": "es2017",
-        "module": "commonjs",
+        "module": "esnext",
         "sourceMap": true,
         "outDir": "./dist",
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
         "removeComments": true,
         "strict": true,
         "noImplicitAny": false,
         "strictNullChecks": false,
         "types": ["@overwolf/types", "node"],
-        "rootDirs": ["./src"]
+        "rootDir": "./src"
     },
-    "exclude": ["node_modules"]
+    "include": ["src/**/*.ts"]
 }

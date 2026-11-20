@@ -47,6 +47,13 @@ To be able to actually run and test a development version, you need to be a deve
 
 - Run the VSCode task `Build` (`CTRL + Shift + B` or `CMD + Shift + B` by default)
 
+The build runs TypeScript 7 type-checking for the application and utilities before webpack packages the app. Webpack uses esbuild for transpilation, retaining the ES2017 runtime target.
+
+- `npm run typecheck` checks both the application and utilities without writing files.
+- `npm run dev` watches and rebuilds the application. Run `npm run typecheck:watch` in a second terminal for application type errors; webpack transpilation does not check types.
+
+The scraper runs through `tsx` and parses source with Babel rather than depending on TypeScript's removed legacy compiler API.
+
 ### Test it
 
 Load the application as an unpackaged app in Overwolf:

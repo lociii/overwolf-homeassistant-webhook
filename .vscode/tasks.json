@@ -32,8 +32,8 @@
         },
         {
             "label": "Scrape game features",
-            "command": "npx",
-            "args": ["ts-node", "utility/scrape_features.ts"],
+            "command": "npm",
+            "args": ["run", "scrape"],
             "group": "none"
         }
     ]

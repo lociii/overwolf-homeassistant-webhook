@@ -1,7 +1,7 @@
 import { readFile, writeFile } from "node:fs/promises"
 import { resolve } from "node:path"
 import * as prettier from "prettier"
-import * as ts from "typescript"
+import { parse } from "@babel/parser"
 
 interface GameDefinition {
     name: string
@@ -116,28 +116,27 @@ export class Scraper {
         }
     }
 
-    private findVariableInitializer(
-        content: string,
-        variableName: string
-    ): ts.Expression | undefined {
-        const source = ts.createSourceFile(
-            "supported-games.js",
-            content,
-            ts.ScriptTarget.Latest,
-            true,
-            ts.ScriptKind.JS
-        )
-        for (const statement of source.statements) {
-            if (!ts.isVariableStatement(statement)) {
-                continue
+    private findVariableInitializers(content: string, variableName: string) {
+        const source = parse(content, {
+            sourceType: "unambiguous",
+            plugins: ["typescript"],
+        })
+        return source.program.body.flatMap((statement) => {
+            const declaration =
+                statement.type === "ExportNamedDeclaration"
+                    ? statement.declaration
+                    : statement
+            if (declaration?.type !== "VariableDeclaration") {
+                return []
             }
-            for (const declaration of statement.declarationList.declarations) {
-                if (declaration.name.getText(source) === variableName) {
-                    return declaration.initializer
-                }
-            }
-        }
-        return undefined
+            return declaration.declarations
+                .filter(
+                    (variable) =>
+                        variable.id.type === "Identifier" &&
+                        variable.id.name === variableName
+                )
+                .map((variable) => variable.init)
+        })
     }
 
     private async fetchGameMetadataNames(): Promise<Map<number, string>> {
@@ -149,38 +148,41 @@ export class Scraper {
                 `Failed to fetch GEP game metadata: HTTP ${response.status}`
             )
         }
-        const initializer = this.findVariableInitializer(
+        const [initializer] = this.findVariableInitializers(
             await response.text(),
             "GamesMetaData"
         )
-        if (!initializer || !ts.isObjectLiteralExpression(initializer)) {
+        if (initializer?.type !== "ObjectExpression") {
             throw new Error("GEP game metadata catalogue not found")
         }
         const names = new Map<number, string>()
         for (const property of initializer.properties) {
             if (
-                !ts.isPropertyAssignment(property) ||
-                !ts.isObjectLiteralExpression(property.initializer) ||
+                property.type !== "ObjectProperty" ||
+                property.computed ||
+                property.value.type !== "ObjectExpression" ||
                 !(
-                    ts.isStringLiteral(property.name) ||
-                    ts.isNumericLiteral(property.name)
+                    property.key.type === "StringLiteral" ||
+                    property.key.type === "NumericLiteral"
                 )
             ) {
                 continue
             }
-            const gameId = Number(property.name.text)
+            const gameId = Number(property.key.value)
             if (!Number.isSafeInteger(gameId) || gameId <= 0) {
                 continue
             }
-            for (const field of property.initializer.properties) {
+            for (const field of property.value.properties) {
                 if (
-                    ts.isPropertyAssignment(field) &&
-                    (ts.isIdentifier(field.name) ||
-                        ts.isStringLiteral(field.name)) &&
-                    field.name.text === "name" &&
-                    ts.isStringLiteral(field.initializer)
+                    field.type === "ObjectProperty" &&
+                    !field.computed &&
+                    ((field.key.type === "Identifier" &&
+                        field.key.name === "name") ||
+                        (field.key.type === "StringLiteral" &&
+                            field.key.value === "name")) &&
+                    field.value.type === "StringLiteral"
                 ) {
-                    const name = this.normalizeGameName(field.initializer.text)
+                    const name = this.normalizeGameName(field.value.value)
                     if (name) {
                         names.set(gameId, name)
                     }
@@ -203,14 +205,19 @@ export class Scraper {
         const scripts = /<script\b[^>]*>([\s\S]*?)<\/script\s*>/gi
         let script: RegExpExecArray | null
         while ((script = scripts.exec(html)) !== null) {
-            const initializer = this.findVariableInitializer(
+            if (!script[1].includes("g_supportedGames")) {
+                continue
+            }
+            const [initializer] = this.findVariableInitializers(
                 script[1],
                 "g_supportedGames"
             )
-            if (!initializer || !ts.isArrayLiteralExpression(initializer)) {
+            if (initializer?.type !== "ArrayExpression") {
                 continue
             }
-            const catalogue: unknown = JSON.parse(initializer.getText())
+            const catalogue: unknown = JSON.parse(
+                script[1].slice(initializer.start, initializer.end)
+            )
             if (!Array.isArray(catalogue)) {
                 throw new Error("Invalid supported games catalogue")
             }
@@ -238,29 +245,13 @@ export class Scraper {
             readFile(constsPath, "utf8"),
             readFile(manifestPath, "utf8"),
         ])
-        const source = ts.createSourceFile(
-            constsPath,
+        const declarations = this.findVariableInitializers(
             consts,
-            ts.ScriptTarget.Latest,
-            true
+            "interestingFeatures"
         )
-        const declarations: ts.VariableDeclaration[] = []
-        for (const statement of source.statements) {
-            if (!ts.isVariableStatement(statement)) {
-                continue
-            }
-            for (const declaration of statement.declarationList.declarations) {
-                if (
-                    declaration.name.getText(source) === "interestingFeatures"
-                ) {
-                    declarations.push(declaration)
-                }
-            }
-        }
         if (
             declarations.length !== 1 ||
-            !declarations[0].initializer ||
-            !ts.isObjectLiteralExpression(declarations[0].initializer)
+            declarations[0]?.type !== "ObjectExpression"
         ) {
             throw new Error(
                 "Expected one interestingFeatures object declaration"
@@ -276,10 +267,10 @@ export class Scraper {
             )
             return `    // ${games[gameId].name}\n    ${gameId}: [\n${names.join("\n")}\n    ],`
         })
-        const initializer = declarations[0].initializer
+        const initializer = declarations[0]
         const updatedConsts = await this.formatSource(
             constsPath,
-            consts.slice(0, initializer.getStart(source)) +
+            consts.slice(0, initializer.start) +
                 `{\n${entries.join("\n")}\n}` +
                 consts.slice(initializer.end)
         )
