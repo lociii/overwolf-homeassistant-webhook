@@ -2,15 +2,17 @@ import { AppWindow } from "../AppWindow"
 import { windowNames } from "../consts"
 import { Config } from "../services/config"
 import { EventBus } from "../services/eventbus.js"
-
-type Nullable<T> = T | null
+import type {
+    AppEventArguments,
+    AppEventListener,
+} from "../services/eventbus.js"
 
 class Desktop extends AppWindow {
     private static _instance: Desktop
     private _config: Config
-    private _eventLog: Nullable<HTMLElement> = null
-    private _eventBusListenerBound
-    private _overwolfEventBus: Nullable<EventBus> = null
+    private _eventLog: HTMLElement
+    private _eventBusListenerBound: AppEventListener
+    private _overwolfEventBus: EventBus
 
     public static instance() {
         if (!this._instance) {
@@ -23,53 +25,42 @@ class Desktop extends AppWindow {
     private constructor() {
         super(windowNames.desktop)
         this._config = overwolf.windows.getMainWindow()._overwolfConfig
+        this._overwolfEventBus =
+            overwolf.windows.getMainWindow()._overwolfEventBus
+        this._eventLog = this.getElement("eventlog", HTMLElement)
         this._eventBusListenerBound = this._eventBusListener.bind(this)
     }
 
     protected async on_close(e: Event) {
         // remove eventbus listener when desktop window gets closed
-        if (this._overwolfEventBus != null) {
-            this._overwolfEventBus.removeListener(this._eventBusListenerBound)
-        }
+        this._overwolfEventBus.removeListener(this._eventBusListenerBound)
     }
 
     public async run() {
-        // get the event bus instance from the background window
-        this._overwolfEventBus =
-            overwolf.windows.getMainWindow()._overwolfEventBus
         // add our desktop window listener
-        if (this._overwolfEventBus != null) {
-            this._overwolfEventBus.addListener(this._eventBusListenerBound)
-        }
+        this._overwolfEventBus.addListener(this._eventBusListenerBound)
 
         // make sure our settings get saved
         this._registerFormHandler()
 
         // register handler to clear event log
         this._registerClearHandler()
-
-        // get the event log element
-        this._eventLog = document.getElementById("eventlog")
     }
 
     private _registerFormHandler() {
         // get the webhook html input
-        const webhookUrlElement = document.getElementById(
-            "webhook_url"
-        ) as HTMLInputElement
-        const throttleElement = document.getElementById(
-            "throttle"
-        ) as HTMLInputElement
-        const saveButtonElement = document.getElementById(
-            "save"
-        ) as HTMLInputElement
+        const webhookUrlElement = this.getElement(
+            "webhook_url",
+            HTMLInputElement
+        )
+        const throttleElement = this.getElement("throttle", HTMLInputElement)
+        const saveButtonElement = this.getElement("save", HTMLInputElement)
 
-        const formErrorElement = document.getElementById(
-            "form_error"
-        ) as HTMLDivElement
-        const formSuccessElement = document.getElementById(
-            "form_success"
-        ) as HTMLDivElement
+        const formErrorElement = this.getElement("form_error", HTMLDivElement)
+        const formSuccessElement = this.getElement(
+            "form_success",
+            HTMLDivElement
+        )
 
         // set the current values
         webhookUrlElement.value = this._config.getWebhookUrl()
@@ -113,29 +104,25 @@ class Desktop extends AppWindow {
     }
 
     private _registerClearHandler() {
-        const clearButtonElement = document.getElementById(
-            "clear"
-        ) as HTMLInputElement
+        const clearButtonElement = this.getElement("clear", HTMLInputElement)
 
         clearButtonElement.onclick = (e) => {
             this._eventLog.textContent = ""
         }
     }
 
-    private _eventBusListener(eventName: string, eventValue: object) {
+    private _eventBusListener(...[eventName, eventValue]: AppEventArguments) {
         // listen to events on the eventbus
         switch (eventName) {
             case "log": {
-                if (this._eventLog != null) {
-                    const entry = document.createElement("div")
-                    entry.textContent = String(eventValue)
-                    if (this._eventLog.childElementCount == 0) {
-                        this._eventLog.textContent = ""
-                    }
-                    this._eventLog.prepend(entry)
-                    while (this._eventLog.childElementCount > 100) {
-                        this._eventLog.lastElementChild.remove()
-                    }
+                const entry = document.createElement("div")
+                entry.textContent = eventValue
+                if (this._eventLog.childElementCount == 0) {
+                    this._eventLog.textContent = ""
+                }
+                this._eventLog.prepend(entry)
+                while (this._eventLog.childElementCount > 100) {
+                    this._eventLog.lastElementChild?.remove()
                 }
             }
         }

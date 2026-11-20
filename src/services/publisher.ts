@@ -4,11 +4,19 @@ const maxQueuedEvents = 1000
 const maxBatchEvents = 100
 const requestTimeoutMilliseconds = 10000
 
+interface PublishedEvent {
+    type: "info" | "event"
+    gameId: number
+    gameName: string
+    gameShortName: string
+    data: Record<string, unknown>
+}
+
 class Publisher {
-    private _events: Object[]
+    private _events: PublishedEvent[]
     private _config: Config
     private active: boolean = false
-    private timeout: NodeJS.Timeout
+    private timeout: number | null = null
 
     constructor(config: Config) {
         this._events = []
@@ -42,11 +50,11 @@ class Publisher {
     }
 
     public push(
-        dataType: string,
+        dataType: PublishedEvent["type"],
         gameId: number,
         gameName: string,
         gameShortName: string,
-        data: Object
+        data: PublishedEvent["data"]
     ) {
         this._events.push({
             type: dataType,
@@ -71,7 +79,7 @@ class Publisher {
         void this.sendBatch(events)
     }
 
-    private async sendBatch(events: Object[]) {
+    private async sendBatch(events: PublishedEvent[]) {
         const controller = new AbortController()
         const requestTimeout = setTimeout(
             () => controller.abort(),

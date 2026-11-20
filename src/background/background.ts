@@ -2,7 +2,9 @@ import { windowNames, interestingFeatures } from "../consts"
 import { OWWindow, OWGames, OWGamesEvents } from "@overwolf/overwolf-api-ts"
 import { Config } from "../services/config"
 import { EventBus } from "../services/eventbus"
+import type { AppEventArguments } from "../services/eventbus"
 import { Publisher } from "../services/publisher"
+import { decodeGameData, isGameData } from "../services/game-data"
 
 declare global {
     interface Window {
@@ -58,7 +60,7 @@ class BackgroundController {
         overwolf.games.onGameInfoUpdated.addListener(() => {
             this.refreshRunningGame()
         })
-        this._eventBus.addListener((eventName: string) => {
+        this._eventBus.addListener((...[eventName]: AppEventArguments) => {
             if (eventName == "configSaved") {
                 this.refreshRunningGame()
             }
@@ -126,21 +128,31 @@ class BackgroundController {
         if (this._config.isValid() == false) {
             return
         }
+        const features = interestingFeatures[gameId]
+        if (!features) {
+            return
+        }
 
         const gameEventHelper = new OWGamesEvents(
             {
-                onInfoUpdates: (data: Object) => {
-                    if (this._gameEventHelper == gameEventHelper) {
+                onInfoUpdates: (data: unknown) => {
+                    if (
+                        this._gameEventHelper == gameEventHelper &&
+                        isGameData(data)
+                    ) {
                         this.publishInfo(data)
                     }
                 },
-                onNewEvents: (data: Object) => {
-                    if (this._gameEventHelper == gameEventHelper) {
+                onNewEvents: (data: unknown) => {
+                    if (
+                        this._gameEventHelper == gameEventHelper &&
+                        isGameData(data)
+                    ) {
                         this.publishEvent(data)
                     }
                 },
             },
-            interestingFeatures[gameId]
+            features
         )
         this._gameEventHelper = gameEventHelper
         this._currentGameId = gameId
@@ -170,22 +182,25 @@ class BackgroundController {
         }
     }
 
-    private stopListening(e) {
+    private stopListening(reason: unknown) {
         const gameEventHelper = this._gameEventHelper
         this._gameEventHelper = null
-        gameEventHelper.stop()
+        gameEventHelper?.stop()
         this._publisher.stop()
         this._currentGameId = null
         this._currentGameName = ""
         this._currentGameShortName = ""
         this._eventBus.trigger(
             "log",
-            "APP: Game event listener stopped: " + JSON.stringify(e)
+            "APP: Game event listener stopped: " + JSON.stringify(reason)
         )
     }
 
-    private publishInfo(data: Object) {
-        this._tryDecodeStringifiedJSON(data)
+    private publishInfo(data: Record<string, unknown>) {
+        if (this._currentGameId === null) {
+            return
+        }
+        decodeGameData(data)
         this._eventBus.trigger("log", "INFO: " + JSON.stringify(data))
 
         this._publisher.push(
@@ -197,8 +212,11 @@ class BackgroundController {
         )
     }
 
-    private publishEvent(data: Object) {
-        this._tryDecodeStringifiedJSON(data)
+    private publishEvent(data: Record<string, unknown>) {
+        if (this._currentGameId === null) {
+            return
+        }
+        decodeGameData(data)
         this._eventBus.trigger("log", "EVENT: " + JSON.stringify(data))
 
         this._publisher.push(
@@ -208,19 +226,6 @@ class BackgroundController {
             this._currentGameShortName,
             data
         )
-    }
-
-    private _tryDecodeStringifiedJSON(data: Object) {
-        for (const fieldName of Object.keys(data)) {
-            if (typeof data[fieldName] == "string") {
-                try {
-                    data[fieldName] = JSON.parse(data[fieldName])
-                } catch (_) {}
-            }
-            if (data[fieldName] !== null && typeof data[fieldName] == "object") {
-                this._tryDecodeStringifiedJSON(data[fieldName])
-            }
-        }
     }
 }
 

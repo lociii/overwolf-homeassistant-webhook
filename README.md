@@ -51,6 +51,8 @@ To be able to actually run and test a development version, you need to be a deve
 
 The build runs TypeScript 7 type-checking for the application and utilities before webpack packages the app. Webpack uses esbuild for transpilation, retaining the ES2017 runtime target.
 
+Both TypeScript projects use full strict checking. The application uses browser and Overwolf types; utilities use Node types without browser globals.
+
 - `npm run typecheck` checks both the application and utilities without writing files.
 - `npm run dev` watches and rebuilds the application. Run `npm run typecheck:watch` in a second terminal for application type errors; webpack transpilation does not check types.
 

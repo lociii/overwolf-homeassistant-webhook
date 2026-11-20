@@ -1,4 +1,4 @@
-const interestingFeatures = {
+const interestingFeatures: Partial<Record<number, string[]>> = {
     // World of Warcraft
     765: ["gep_internal", "game_info", "location ", "player_info"],
     // Roblox

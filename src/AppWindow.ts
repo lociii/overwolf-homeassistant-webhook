@@ -3,8 +3,6 @@ import { OWWindow } from "@overwolf/overwolf-api-ts"
 // derived from https://github.com/overwolf/sample-app/blob/master/ts/src/AppWindow.ts
 // published without an explicit license but communicated to be free to use by developers@overwolf.com
 
-type Nullable<T> = T | null
-
 // A base class for the app's foreground windows.
 // Sets the modal and drag behaviors, which are shared accross the desktop and in-game windows.
 export class AppWindow {
@@ -12,17 +10,20 @@ export class AppWindow {
     protected mainWindow: OWWindow
     protected maximized: boolean = false
 
-    constructor(windowName) {
+    constructor(windowName: string) {
         this.mainWindow = new OWWindow("background")
         this.currWindow = new OWWindow(windowName)
 
-        const closeButton: Nullable<HTMLElement> =
-            document.getElementById("closeButton")
-        const maximizeButton: Nullable<HTMLElement> =
-            document.getElementById("maximizeButton")
-        const minimizeButton: Nullable<HTMLElement> =
-            document.getElementById("minimizeButton")
-        const header: Nullable<HTMLElement> = document.getElementById("header")
+        const closeButton = this.getElement("closeButton", HTMLButtonElement)
+        const maximizeButton = this.getElement(
+            "maximizeButton",
+            HTMLButtonElement
+        )
+        const minimizeButton = this.getElement(
+            "minimizeButton",
+            HTMLButtonElement
+        )
+        const header = this.getElement("header", HTMLElement)
 
         // set the element that can be dragged
         this.setDrag(header)
@@ -57,6 +58,17 @@ export class AppWindow {
 
     public async getWindowState() {
         return await this.currWindow.getWindowState()
+    }
+
+    protected getElement<ElementType extends HTMLElement>(
+        elementId: string,
+        elementType: { new (): ElementType }
+    ): ElementType {
+        const element = document.getElementById(elementId)
+        if (!(element instanceof elementType)) {
+            throw new Error(`Missing or invalid window element: ${elementId}`)
+        }
+        return element
     }
 
     private async setDrag(elem: HTMLElement) {

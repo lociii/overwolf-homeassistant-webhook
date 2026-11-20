@@ -90,9 +90,9 @@ export class Scraper {
     }
 
     private async resolveGameNames(games: Record<number, GameDefinition>) {
-        const missingNames = Object.keys(games).filter(
-            (gameId) => !games[gameId].name
-        )
+        const missingNames = Object.keys(games)
+            .map(Number)
+            .filter((gameId) => !games[gameId].name)
         if (missingNames.length === 0) {
             return
         }
@@ -215,6 +215,11 @@ export class Scraper {
             if (initializer?.type !== "ArrayExpression") {
                 continue
             }
+            if (initializer.start == null || initializer.end == null) {
+                throw new Error(
+                    "Supported games catalogue is missing source positions"
+                )
+            }
             const catalogue: unknown = JSON.parse(
                 script[1].slice(initializer.start, initializer.end)
             )
@@ -268,6 +273,11 @@ export class Scraper {
             return `    // ${games[gameId].name}\n    ${gameId}: [\n${names.join("\n")}\n    ],`
         })
         const initializer = declarations[0]
+        if (initializer.start == null || initializer.end == null) {
+            throw new Error(
+                "Game features declaration is missing source positions"
+            )
+        }
         const updatedConsts = await this.formatSource(
             constsPath,
             consts.slice(0, initializer.start) +
@@ -275,29 +285,37 @@ export class Scraper {
                 consts.slice(initializer.end)
         )
 
-        const manifest = JSON.parse(manifestSource)
+        const manifest: unknown = JSON.parse(manifestSource)
         if (
-            !Array.isArray(manifest.data?.game_targeting?.game_ids) ||
-            !Array.isArray(manifest.data?.game_events) ||
-            !Array.isArray(manifest.data?.launch_events)
+            !isRecord(manifest) ||
+            !isRecord(manifest.data) ||
+            !isRecord(manifest.data.game_targeting) ||
+            !Array.isArray(manifest.data.game_targeting.game_ids) ||
+            !Array.isArray(manifest.data.game_events) ||
+            !Array.isArray(manifest.data.launch_events)
         ) {
             throw new Error("Manifest is missing game lists")
         }
         const launchEvents = manifest.data.launch_events.filter(
-            (event) => event.event === "GameLaunch"
+            (event: unknown): event is Record<string, unknown> =>
+                isRecord(event) && event.event === "GameLaunch"
         )
-        if (
-            launchEvents.length === 0 ||
-            launchEvents.some(
-                (event) => !Array.isArray(event.event_data?.game_ids)
-            )
-        ) {
+        if (launchEvents.length === 0) {
             throw new Error("Manifest is missing GameLaunch game lists")
         }
+        const launchEventData = launchEvents.map((event) => {
+            if (
+                !isRecord(event.event_data) ||
+                !Array.isArray(event.event_data.game_ids)
+            ) {
+                throw new Error("Manifest is missing GameLaunch game lists")
+            }
+            return event.event_data
+        })
         manifest.data.game_targeting.game_ids = gameIds
         manifest.data.game_events = gameIds
-        for (const event of launchEvents) {
-            event.event_data.game_ids = gameIds
+        for (const eventData of launchEventData) {
+            eventData.game_ids = gameIds
         }
         const updatedManifest = await this.formatSource(
             manifestPath,

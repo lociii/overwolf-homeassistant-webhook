@@ -7,9 +7,8 @@
         "moduleResolution": "bundler",
         "removeComments": true,
         "strict": true,
-        "noImplicitAny": false,
-        "strictNullChecks": false,
-        "types": ["@overwolf/types", "node"],
+        "lib": ["es2017", "dom"],
+        "types": ["@overwolf/types"],
         "rootDir": "./src"
     },
     "include": ["src/**/*.ts"]
