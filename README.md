@@ -5,7 +5,9 @@ Send game events from overwolf to Home Assistant.
 Events are sent fire and forget. There will be no validation that they were actually received and processed.
 This delivery behavior is intentional: batches are discarded from the local queue when sent, HTTP response statuses are not checked, and failed requests are not retried. Network failures are logged, but the app does not track delivery or processing status.
 
-The throttle controls the interval between batch sends, not the number of concurrent requests. Sends do not wait for previous requests to finish, so slow endpoints can leave multiple requests in flight and batches may arrive out of order. There is no application-level request timeout, concurrency limit, or batch-size limit.
+The throttle controls the interval between batch sends, not the number of concurrent requests. Each interval sends at most 100 events. The queue holds at most 1,000 events; when full, the oldest event is discarded to retain recent state. These limits count events, not payload bytes.
+
+Requests are aborted after 10 seconds. Sends do not wait for previous requests to finish, so slow endpoints can leave multiple requests in flight and batches may arrive out of order. There is no explicit concurrency limit. When game listening stops, all queued events are sent immediately in batches of at most 100, without waiting for responses. Failed or timed-out batches are not requeued.
 
 ## Disclaimer
 

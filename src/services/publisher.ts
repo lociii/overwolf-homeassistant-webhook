@@ -1,5 +1,9 @@
 import { Config } from "../services/config"
 
+const maxQueuedEvents = 1000
+const maxBatchEvents = 100
+const requestTimeoutMilliseconds = 10000
+
 class Publisher {
     private _events: Object[]
     private _config: Config
@@ -32,7 +36,9 @@ class Publisher {
             clearTimeout(this.timeout)
         }
         this.timeout = null
-        this.eventuallySend()
+        while (this._events.length > 0) {
+            this.eventuallySend()
+        }
     }
 
     public push(
@@ -49,34 +55,44 @@ class Publisher {
             gameShortName: gameShortName,
             data: data,
         })
+        if (this._events.length > maxQueuedEvents) {
+            this._events.splice(0, this._events.length - maxQueuedEvents)
+        }
     }
 
     private eventuallySend() {
-        const length: number = this._events.length
-        if (length > 0) {
-            // remove the elements from the stack
-            // this makes sure that we don't accidentially delete
-            // elements that we will send in the next run
-            const self = this
-            const events: Object[] = []
-            Array(length)
-                .fill(null)
-                .map(function () {
-                    events.push(self._events.shift())
-                })
+        if (this._events.length === 0) {
+            return
+        }
 
-            fetch(this._config.getWebhookUrl(), {
+        const events = this._events
+        this._events = events.slice(maxBatchEvents)
+        events.length = Math.min(events.length, maxBatchEvents)
+        void this.sendBatch(events)
+    }
+
+    private async sendBatch(events: Object[]) {
+        const controller = new AbortController()
+        const requestTimeout = setTimeout(
+            () => controller.abort(),
+            requestTimeoutMilliseconds
+        )
+        try {
+            await fetch(this._config.getWebhookUrl(), {
                 headers: { "Content-Type": "application/json" },
                 method: "POST",
                 body: JSON.stringify(events),
-            }).catch(function (err) {
-                overwolf.windows
-                    .getMainWindow()
-                    ._overwolfEventBus.trigger(
-                        "log",
-                        "Error sending events: " + err
-                    )
+                signal: controller.signal,
             })
+        } catch (error) {
+            overwolf.windows
+                .getMainWindow()
+                ._overwolfEventBus.trigger(
+                    "log",
+                    "Error sending events: " + error
+                )
+        } finally {
+            clearTimeout(requestTimeout)
         }
     }
 }
